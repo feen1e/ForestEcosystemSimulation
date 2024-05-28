@@ -8,9 +8,9 @@ public class Carnivore : Animal
     {
         Diet = 2;
     }
-    
+
     protected void Hunt()
     {
-        
+
     }
 }

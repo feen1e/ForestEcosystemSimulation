@@ -3,7 +3,7 @@ namespace ForestEcosystemSimulation.TileContents;
 public class Burrow : TileContents
 {
     public bool IsOccupied = false;
-    
+
     public Burrow()
     {
         TileType = 2;
@@ -13,5 +13,5 @@ public class Burrow : TileContents
     {
         IsOccupied = !IsOccupied;
     }
-    
+
 }

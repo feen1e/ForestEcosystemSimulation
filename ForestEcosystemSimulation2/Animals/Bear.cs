@@ -20,5 +20,5 @@ public class Bear : Omnivore
         CanHunt = true;
         Strength = Random.NextDouble() * (1 - 0.5) + 0.5;
     }
-    
+
 }

@@ -15,7 +15,7 @@ public class Terrain
         if (Type == 0)
         {
             // Forest
-            TileContents.TileContents[] possibleContents = 
+            TileContents.TileContents[] possibleContents =
                 [new Tree(), new Berries(), new Burrow()];
             Contents = d switch
             {
@@ -24,10 +24,11 @@ public class Terrain
                 < 0.9 => possibleContents[1],
                 _ => possibleContents[2]
             };
-        } else if (Type == 1)
+        }
+        else if (Type == 1)
         {
             // River
-            TileContents.TileContents[] possibleContents = 
+            TileContents.TileContents[] possibleContents =
                 [new Fish()];
             Contents = d switch
             {
@@ -38,7 +39,7 @@ public class Terrain
         else if (Type == 2)
         {
             // Meadow
-            TileContents.TileContents[] possibleContents = 
+            TileContents.TileContents[] possibleContents =
                 [new Grass(), new Burrow()];
             Contents = d switch
             {

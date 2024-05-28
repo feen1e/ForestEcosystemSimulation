@@ -8,20 +8,20 @@ public abstract class Food : TileContents
     protected int Count;
     protected int TimeToRegen;
     protected int TimeSinceRegen;
-    
+
     protected Food()
     {
-        TileType = 1;       
+        TileType = 1;
     }
 
     public void Regenerate()
     {
-        
+
     }
 
     public void Eaten()
     {
-        
+
     }
-    
+
 }

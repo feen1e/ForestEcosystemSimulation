@@ -42,7 +42,7 @@ public class ForestEcosystemSimulation
         }
 
         // river generation
-        int maxWidth = Math.Min( _width, _height ) / 5;
+        int maxWidth = Math.Min(_width, _height) / 5;
         maxWidth = maxWidth % 2 == 0 ? maxWidth - 1 : maxWidth;
 
         int row = random.Next(0, 2) == 0 ? 0 : random.Next(0, _height - 1);
@@ -68,7 +68,7 @@ public class ForestEcosystemSimulation
                 }
                 column = newColumn;
             }
-        } 
+        }
         else
         {
             for (int i = 0; i < _width; ++i)
@@ -89,7 +89,7 @@ public class ForestEcosystemSimulation
             }
         }
     }
-    
+
     public void AddAnimals()
     {
         _animals = new Animal[_height][];
@@ -193,7 +193,7 @@ public class ForestEcosystemSimulation
         simulation.NumDeer = 2;
         simulation.NumRacoon = 2;
         simulation.NumBear = 2;
-        simulation.NumbFox = 2; 
+        simulation.NumbFox = 2;
         simulation.NumWolf = 2;
         simulation.GenerateMap();
         simulation.AddAnimals();
@@ -239,11 +239,12 @@ public class ForestEcosystemSimulation
                 if (t == 0)
                 {
                     Console.Write($"\u001b[42m {s} \u001b[0m");
-                } 
+                }
                 else if (t == 1)
                 {
                     Console.Write($"\u001b[44m {s} \u001b[0m");
-                } else
+                }
+                else
                 {
                     Console.Write($"\u001b[102m {s} \u001b[0m");
                 }

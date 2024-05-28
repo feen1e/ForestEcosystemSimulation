@@ -16,6 +16,6 @@ public class Wolf : Carnivore
         Size = 1;
         Strength = Random.NextDouble() * 0.8;
     }
-    
-    
+
+
 }
