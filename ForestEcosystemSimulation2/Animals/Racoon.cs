@@ -1,4 +1,4 @@
-namespace ForestEcosystemSimulation.Animals;
+namespace ForestEcosystemSimulation2.Animals;
 
 public class Racoon : Omnivore
 {
@@ -13,11 +13,11 @@ public class Racoon : Omnivore
 
     public Racoon()
     {
-        Health = Random.Next(5, 16);
-        Speed = Random.NextDouble() * (0.6 - 0.2) + 0.2;
-        Size = 0;
-        CanClimb = true;
-        CanHunt = false;
-        Strength = 0;
+        _health = Random.Next(5, 16);
+        _speed = Random.NextDouble() * (0.6 - 0.2) + 0.2;
+        _size = 0;
+        _canClimb = true;
+        _canHunt = false;
+        _strength = 0;
     }
 }

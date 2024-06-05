@@ -1,12 +1,12 @@
-﻿namespace ForestEcosystemSimulation.Animals;
+﻿namespace ForestEcosystemSimulation2.Animals;
 
 public class Carnivore : Animal
 {
-    protected double Strength;
+    protected double _strength;
 
     protected Carnivore()
     {
-        Diet = 2;
+        _diet = 2;
     }
 
     protected void Hunt()

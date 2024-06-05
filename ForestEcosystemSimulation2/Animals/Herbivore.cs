@@ -1,13 +1,13 @@
-﻿namespace ForestEcosystemSimulation.Animals;
+﻿namespace ForestEcosystemSimulation2.Animals;
 
 public abstract class Herbivore : Animal
 {
-    protected bool CanHide;
-    protected bool IsHidden = false;
+    protected bool _canHide;
+    protected bool _isHidden = false;
 
     protected Herbivore()
     {
-        Diet = 0;
+        _diet = 0;
     }
 
     protected void Hide()

@@ -1,4 +1,4 @@
-namespace ForestEcosystemSimulation.TileContents.Food;
+namespace ForestEcosystemSimulation2.TileContents.Food;
 
 public abstract class Food : TileContents
 {
@@ -11,7 +11,7 @@ public abstract class Food : TileContents
 
     protected Food()
     {
-        TileType = 1;
+        _tileType = 0;
     }
 
     public void Regenerate()

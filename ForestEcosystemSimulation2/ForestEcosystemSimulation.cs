@@ -1,13 +1,16 @@
-﻿using ForestEcosystemSimulation.Animals;
+﻿using ForestEcosystemSimulation2.Animals;
+using ForestEcosystemSimulation2.TileContents.Food;
 
-namespace ForestEcosystemSimulation;
+namespace ForestEcosystemSimulation2;
 
 public class ForestEcosystemSimulation
 {
     private int _width { get; set; }
     private int _height { get; set; }
-    private Terrain[][] _tiles { get; set; }
+    private Terrain.Terrain[][] _tiles { get; set; }
     private Animal[][] _animals { get; set; } = null;
+
+    private int _iterations = 100;
 
     private int NumHare { get; set; }
     private int NumDeer { get; set; }
@@ -26,71 +29,7 @@ public class ForestEcosystemSimulation
         { typeof(Wolf), 'W' }
     };
 
-    public void GenerateMap()
-    {
-        Random random = new Random();
-
-        _tiles = new Terrain[_height][];
-        for (int i = 0; i < _height; i++)
-        {
-            _tiles[i] = new Terrain[_width];
-            for (int j = 0; j < _width; j++)
-            {
-                int a = random.NextDouble() < 0.8 ? 0 : 2;
-                _tiles[i][j] = new Terrain(a);
-            }
-        }
-
-        // river generation
-        int maxWidth = Math.Min(_width, _height) / 5;
-        maxWidth = maxWidth % 2 == 0 ? maxWidth - 1 : maxWidth;
-
-        int row = random.Next(0, 2) == 0 ? 0 : random.Next(0, _height - 1);
-        int column = row == 0 ? random.Next(0, _width - 1) : 0;
-
-        _tiles[row][column] = new Terrain(1);
-
-        if (row == 0)
-        {
-            for (int i = 0; i < _height; i++)
-            {
-                int move = random.Next(0, 3);
-                int maxIndex = (maxWidth - 1) / 2;
-                int newColumn = column;
-                for (int j = 0; j < maxWidth; j++)
-                {
-                    int a = Math.Max(0, Math.Min(column + 1 - move + maxIndex - j, _width - 1));
-                    if (j == (maxWidth - 1) / 2)
-                    {
-                        newColumn = a;
-                    }
-                    _tiles[i][a] = new Terrain(1);
-                }
-                column = newColumn;
-            }
-        }
-        else
-        {
-            for (int i = 0; i < _width; ++i)
-            {
-                int move = random.Next(0, 3);
-                int maxIndex = (maxWidth - 1) / 2;
-                int newRow = row;
-                for (int j = 0; j < maxWidth; j++)
-                {
-                    int a = Math.Max(0, Math.Min(row + 1 - move + maxIndex - j, _height - 1));
-                    if (j == (maxWidth - 1) / 2)
-                    {
-                        newRow = a;
-                    }
-                    _tiles[a][i] = new Terrain(1);
-                }
-                row = newRow;
-            }
-        }
-    }
-
-    public void AddAnimals()
+    private void AddAnimals()
     {
         _animals = new Animal[_height][];
         for (int i = 0; i < _height; i++)
@@ -99,68 +38,6 @@ public class ForestEcosystemSimulation
         }
 
         Random random = new Random();
-        /*int x, y;
-        for (int i = 0; i < NumHare; i++)
-        {
-            do
-            {
-                x = random.Next(0, _height);
-                y = random.Next(0, _width);
-            }
-            while (_tiles[x][y].Type != 1);
-            _animals[x][y] = new Hare();
-        }
-        for (int i = 0; i < NumDeer; i++)
-        {
-            do
-            {
-                x = random.Next(0, _height);
-                y = random.Next(0, _width);
-            }
-            while (_tiles[x][y].Type != 1);
-            _animals[x][y] = new Deer();
-        }
-        for (int i = 0; i < NumRacoon; i++)
-        {
-            do
-            {
-                x = random.Next(0, _height);
-                y = random.Next(0, _width);
-            }
-            while (_tiles[x][y].Type != 1);
-            _animals[x][y] = new Racoon();
-        }
-        for (int i = 0; i < NumBear; i++)
-        {
-            do
-            {
-                x = random.Next(0, _height);
-                y = random.Next(0, _width);
-            }
-            while (_tiles[x][y].Type != 1);
-            _animals[x][y] = new Bear();
-        }
-        for (int i = 0; i < NumbFox; i++)
-        {
-            do
-            {
-                x = random.Next(0, _height);
-                y = random.Next(0, _width);
-            }
-            while (_tiles[x][y].Type != 1);
-            _animals[x][y] = new Fox();
-        }
-        for (int i = 0; i < NumWolf; i++)
-        {
-            do
-            {
-                x = random.Next(0, _height);
-                y = random.Next(0, _width);
-            }
-            while (_tiles[x][y].Type != 1);
-            _animals[x][y] = new Wolf();
-        }*/
-
         AddSpecificAnimal(random, NumHare, () => new Hare());
         AddSpecificAnimal(random, NumDeer, () => new Deer());
         AddSpecificAnimal(random, NumRacoon, () => new Racoon());
@@ -178,9 +55,11 @@ public class ForestEcosystemSimulation
             {
                 x = random.Next(0, _height);
                 y = random.Next(0, _width);
-            }
-            while (_tiles[x][y].Type == 1);
+            } while (_tiles[x][y]._type == 1);
+
             _animals[x][y] = createAnimal();
+            _animals[x][y]._x = x;
+            _animals[x][y]._y = y;
         }
     }
 
@@ -195,7 +74,7 @@ public class ForestEcosystemSimulation
         simulation.NumBear = 2;
         simulation.NumbFox = 2;
         simulation.NumWolf = 2;
-        simulation.GenerateMap();
+        simulation._tiles = Terrain.Terrain.GenerateMap(simulation._height, simulation._width);
         simulation.AddAnimals();
         simulation.PrintMap();
         PrintControls();
@@ -205,28 +84,36 @@ public class ForestEcosystemSimulation
         {
             if (input == 'r')
             {
-                simulation.GenerateMap();
+                simulation._tiles = Terrain.Terrain.GenerateMap(simulation._height, simulation._width);
                 simulation.AddAnimals();
                 simulation.PrintMap();
             }
+
             if (input == 'a')
             {
                 simulation.AddAnimals();
                 simulation.PrintMap();
             }
+
             PrintControls();
             input = Console.ReadKey().KeyChar;
         }
     }
 
-    public void PrintMap()
+    private void PrintMap()
     {
         Console.WriteLine();
         for (int i = 0; i < _height; ++i)
         {
             for (int j = 0; j < _width; ++j)
             {
-                int t = _tiles[i][j].Type;
+                int t = _tiles[i][j]._type;
+                //int c = _tiles[i][j]._contents?._tileType ?? -1;
+                // if (_tiles[i][j]._contents?._tileType == 0)
+                // {
+                //     t = 3;
+                // }
+
                 char s = ' ';
                 if (_animals is not null)
                 {
@@ -238,29 +125,59 @@ public class ForestEcosystemSimulation
 
                 if (t == 0)
                 {
+                    /*if (c == 0)
+                    {
+                        Console.Write($"\u001b[101m {s} \u001b[0m");
+                    }
+                    else if (c == 1)
+                    {
+                        Console.Write($"\u001b[103m {s} \u001b[0m");
+                    }
+                    else if (c == 2)
+                    {
+                        Console.Write($"\u001b[100m {s} \u001b[0m");
+                    }
+                    else
+                    {
+                        Console.Write($"\u001b[42m {s} \u001b[0m");
+                    }*/
                     Console.Write($"\u001b[42m {s} \u001b[0m");
                 }
                 else if (t == 1)
                 {
                     Console.Write($"\u001b[44m {s} \u001b[0m");
                 }
+                else if (t == 3)
+                {
+                    Console.Write($"\u001b[105m {s} \u001b[0m");
+                }
                 else
                 {
                     Console.Write($"\u001b[102m {s} \u001b[0m");
                 }
             }
+
             Console.WriteLine();
         }
     }
 
-    public static void PrintControls()
+
+    public void RunSimulation(int iterations)
+    {
+        for (int i = 0; i < iterations; i++)
+        {
+        }
+    }
+
+
+    private static void PrintControls()
     {
         Console.WriteLine("""
 
-            r - regenerate map and animals
-            a - regenerate animals
-            e - end
+                          r - regenerate map and animals
+                          a - regenerate animals
+                          e - end
 
-            """);
+                          """);
     }
 }

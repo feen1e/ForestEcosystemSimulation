@@ -1,6 +1,6 @@
-namespace ForestEcosystemSimulation.TileContents;
+namespace ForestEcosystemSimulation2.TileContents;
 
 public abstract class TileContents
 {
-    protected int TileType;
+    public int _tileType;
 }

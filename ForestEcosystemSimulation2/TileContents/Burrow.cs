@@ -1,17 +1,17 @@
-namespace ForestEcosystemSimulation.TileContents;
+namespace ForestEcosystemSimulation2.TileContents;
 
 public class Burrow : TileContents
 {
-    public bool IsOccupied = false;
+    public bool _isOccupied = false;
 
     public Burrow()
     {
-        TileType = 2;
+        _tileType = 2;
     }
 
     public void Occupied()
     {
-        IsOccupied = !IsOccupied;
+        _isOccupied = !_isOccupied;
     }
 
 }

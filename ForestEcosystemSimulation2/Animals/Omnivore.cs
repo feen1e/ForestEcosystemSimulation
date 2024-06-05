@@ -1,14 +1,14 @@
-﻿namespace ForestEcosystemSimulation.Animals;
+﻿namespace ForestEcosystemSimulation2.Animals;
 
 public abstract class Omnivore : Animal
 {
 
-    protected bool CanClimb;
-    protected bool CanHunt;
-    protected double Strength;
+    protected bool _canClimb;
+    protected bool _canHunt;
+    protected double _strength;
 
     protected Omnivore()
     {
-        Diet = 1;
+        _diet = 1;
     }
 }

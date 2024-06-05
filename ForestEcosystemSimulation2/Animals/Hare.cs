@@ -1,4 +1,4 @@
-namespace ForestEcosystemSimulation.Animals;
+namespace ForestEcosystemSimulation2.Animals;
 
 public class Hare : Herbivore
 {
@@ -11,9 +11,9 @@ public class Hare : Herbivore
 
     public Hare()
     {
-        Health = Random.Next(1, 10);
-        Speed = Random.NextDouble() * (0.7 - 0.5) + 0.5;
-        Size = 0;
-        CanHide = true;
+        _health = Random.Next(1, 10);
+        _speed = Random.NextDouble() * (0.7 - 0.5) + 0.5;
+        _size = 0;
+        _canHide = true;
     }
 }
