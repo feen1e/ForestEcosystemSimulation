@@ -5,12 +5,12 @@ namespace ForestEcosystemSimulation2;
 
 public class ForestEcosystemSimulation
 {
-    private int _width { get; set; }
-    private int _height { get; set; }
-    private Terrain.Terrain[][] _tiles { get; set; }
-    private Animal[][] _animals { get; set; } = null;
+    private int Width { get; set; }
+    private int Height { get; set; }
+    private Terrain.Terrain[][] Tiles { get; set; }
+    private Animal[][] Animals { get; set; } = null;
 
-    private int _iterations = 100;
+    private int _iterations = 10;
 
     private int NumHare { get; set; }
     private int NumDeer { get; set; }
@@ -31,10 +31,10 @@ public class ForestEcosystemSimulation
 
     private void AddAnimals()
     {
-        _animals = new Animal[_height][];
-        for (int i = 0; i < _height; i++)
+        Animals = new Animal[Height][];
+        for (int i = 0; i < Height; i++)
         {
-            _animals[i] = new Animal[_width];
+            Animals[i] = new Animal[Width];
         }
 
         Random random = new Random();
@@ -53,30 +53,31 @@ public class ForestEcosystemSimulation
         {
             do
             {
-                x = random.Next(0, _height);
-                y = random.Next(0, _width);
-            } while (_tiles[x][y]._type == 1);
+                x = random.Next(0, Height);
+                y = random.Next(0, Width);
+            } while (Tiles[x][y].Type == 1);
 
-            _animals[x][y] = createAnimal();
-            _animals[x][y]._x = x;
-            _animals[x][y]._y = y;
+            Animals[x][y] = createAnimal();
+            Animals[x][y].X = x;
+            Animals[x][y].Y = y;
         }
     }
 
     public static void Main()
     {
         ForestEcosystemSimulation simulation = new ForestEcosystemSimulation();
-        simulation._width = 35;
-        simulation._height = 24;
+        simulation.Width = 35;
+        simulation.Height = 24;
         simulation.NumHare = 2;
-        simulation.NumDeer = 2;
-        simulation.NumRacoon = 2;
-        simulation.NumBear = 2;
-        simulation.NumbFox = 2;
-        simulation.NumWolf = 2;
-        simulation._tiles = Terrain.Terrain.GenerateMap(simulation._height, simulation._width);
+        simulation.NumDeer = 0;
+        simulation.NumRacoon = 0;
+        simulation.NumBear = 0;
+        simulation.NumbFox = 0;
+        simulation.NumWolf = 0;
+        simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
         simulation.AddAnimals();
         simulation.PrintMap();
+        //simulation.CheckMap();
         PrintControls();
 
         char input = Console.ReadKey().KeyChar;
@@ -84,7 +85,7 @@ public class ForestEcosystemSimulation
         {
             if (input == 'r')
             {
-                simulation._tiles = Terrain.Terrain.GenerateMap(simulation._height, simulation._width);
+                simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
                 simulation.AddAnimals();
                 simulation.PrintMap();
             }
@@ -95,6 +96,11 @@ public class ForestEcosystemSimulation
                 simulation.PrintMap();
             }
 
+            if (input == 's')
+            {
+                simulation.RunSimulation(simulation._iterations);
+            }
+
             PrintControls();
             input = Console.ReadKey().KeyChar;
         }
@@ -103,11 +109,11 @@ public class ForestEcosystemSimulation
     private void PrintMap()
     {
         Console.WriteLine();
-        for (int i = 0; i < _height; ++i)
+        for (int i = 0; i < Height; ++i)
         {
-            for (int j = 0; j < _width; ++j)
+            for (int j = 0; j < Width; ++j)
             {
-                int t = _tiles[i][j]._type;
+                int t = Tiles[i][j].Type;
                 //int c = _tiles[i][j]._contents?._tileType ?? -1;
                 // if (_tiles[i][j]._contents?._tileType == 0)
                 // {
@@ -115,11 +121,11 @@ public class ForestEcosystemSimulation
                 // }
 
                 char s = ' ';
-                if (_animals is not null)
+                if (Animals is not null)
                 {
-                    if (_animals[i][j] is not null)
+                    if (Animals[i][j] is not null)
                     {
-                        s = _animalSymbols.TryGetValue(_animals[i][j].GetType(), out char symbol) ? symbol : ' ';
+                        s = _animalSymbols.TryGetValue(Animals[i][j].GetType(), out char symbol) ? symbol : ' ';
                     }
                 }
 
@@ -166,6 +172,30 @@ public class ForestEcosystemSimulation
     {
         for (int i = 0; i < iterations; i++)
         {
+            foreach (var animalY in Animals)
+            {
+                foreach (var animalX in animalY)
+                {
+                    if (animalX is not null)
+                    {
+                        animalX.Scout(Height, Width, Tiles);
+                    }
+                    
+                }
+            }
+        }
+    }
+
+    public void CheckMap()
+    {
+        for (int i = 0; i < Height; ++i)
+        {
+            for (int j = 0; j < Width; ++j)
+            {
+                int t = Tiles[i][j].Type;
+                var c = Tiles[i][j].Contents?.TileType;
+                Console.WriteLine($"{i} {j} Typ: {t} Zawartosc {c}");
+            }
         }
     }
 

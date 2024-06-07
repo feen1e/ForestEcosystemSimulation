@@ -11,10 +11,10 @@ public class Wolf : Carnivore
 
     public Wolf()
     {
-        _health = Random.Next(15, 31);
-        _speed = Random.NextDouble() * (1 - 0.5) + 0.5;
-        _size = 1;
-        _strength = Random.NextDouble() * 0.8;
+        Health = Random.Next(15, 31);
+        Speed = Random.NextDouble() * (1 - 0.5) + 0.5;
+        Size = 1;
+        Strength = Random.NextDouble() * 0.8;
     }
 
 

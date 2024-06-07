@@ -3,12 +3,12 @@
 public abstract class Omnivore : Animal
 {
 
-    protected bool _canClimb;
-    protected bool _canHunt;
-    protected double _strength;
+    protected bool CanClimb;
+    protected bool CanHunt;
+    protected double Strength;
 
     protected Omnivore()
     {
-        _diet = 1;
+        Diet = 1;
     }
 }

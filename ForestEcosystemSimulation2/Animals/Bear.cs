@@ -13,12 +13,12 @@ public class Bear : Omnivore
 
     public Bear()
     {
-        _health = Random.Next(20, 31);
-        _speed = Random.NextDouble() * 0.5;
-        _size = 1;
-        _canClimb = false;
-        _canHunt = true;
-        _strength = Random.NextDouble() * (1 - 0.5) + 0.5;
+        Health = Random.Next(20, 31);
+        Speed = Random.NextDouble() * 0.5;
+        Size = 1;
+        CanClimb = false;
+        CanHunt = true;
+        Strength = Random.NextDouble() * (1 - 0.5) + 0.5;
     }
 
 }

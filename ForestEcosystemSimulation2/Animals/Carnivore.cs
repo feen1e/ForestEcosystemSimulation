@@ -2,11 +2,11 @@
 
 public class Carnivore : Animal
 {
-    protected double _strength;
+    protected double Strength;
 
     protected Carnivore()
     {
-        _diet = 2;
+        Diet = 2;
     }
 
     protected void Hunt()

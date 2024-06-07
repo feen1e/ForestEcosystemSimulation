@@ -11,9 +11,9 @@ public class Fox : Carnivore
 
     public Fox()
     {
-        _health = Random.Next(10, 26);
-        _speed = Random.NextDouble() * (0.8 - 0.3) + 0.3;
-        _size = 0;
-        _strength = Random.NextDouble() * 0.6;
+        Health = Random.Next(10, 26);
+        Speed = Random.NextDouble() * (0.8 - 0.3) + 0.3;
+        Size = 0;
+        Strength = Random.NextDouble() * 0.6;
     }
 }

@@ -2,12 +2,12 @@
 
 public abstract class Herbivore : Animal
 {
-    protected bool _canHide;
-    protected bool _isHidden = false;
+    protected bool CanHide;
+    protected bool IsHidden = false;
 
     protected Herbivore()
     {
-        _diet = 0;
+        Diet = 0;
     }
 
     protected void Hide()

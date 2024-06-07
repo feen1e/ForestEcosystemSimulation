@@ -5,19 +5,19 @@ namespace ForestEcosystemSimulation2.Terrain;
 
 public class Terrain
 {
-    public readonly int _type;
-    public TileContents.TileContents? _contents;
+    public readonly int Type;
+    public TileContents.TileContents? Contents;
 
     public Terrain(int type)
     {
-        _type = type;
+        Type = type;
         double d = new Random().NextDouble();
-        if (_type == 0)
+        if (Type == 0)
         {
             // Forest
             TileContents.TileContents[] possibleContents =
                 [new Tree(), new Berries(), new Burrow()];
-            _contents = d switch
+            Contents = d switch
             {
                 < 0.5 => null,
                 < 0.8 => possibleContents[0],
@@ -25,23 +25,23 @@ public class Terrain
                 _ => possibleContents[2]
             };
         }
-        else if (_type == 1)
+        else if (Type == 1)
         {
             // River
             TileContents.TileContents[] possibleContents =
                 [new Fish()];
-            _contents = d switch
+            Contents = d switch
             {
                 < 0.75 => null,
                 _ => possibleContents[0]
             };
         }
-        else if (_type == 2)
+        else if (Type == 2)
         {
             // Meadow
             TileContents.TileContents[] possibleContents =
                 [new Grass(), new Burrow()];
-            _contents = d switch
+            Contents = d switch
             {
                 < 0.70 => null,
                 < 0.90 => possibleContents[0],
@@ -50,7 +50,7 @@ public class Terrain
         }
         else
         {
-            Console.Error.WriteLine($"Invalid terrain type: {_type}");
+            Console.Error.WriteLine($"Invalid terrain type: {Type}");
         }
     }
 

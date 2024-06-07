@@ -4,6 +4,6 @@ public class Tree : TileContents
 {
     public Tree()
     {
-        _tileType = 1;
+        TileType = 1;
     }
 }
