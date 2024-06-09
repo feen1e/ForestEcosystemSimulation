@@ -1,5 +1,4 @@
-﻿using ForestEcosystemSimulation2.TileContents;
-using ForestEcosystemSimulation2.TileContents.Food;
+﻿using ForestEcosystemSimulation2.TileContents.Food;
 
 namespace ForestEcosystemSimulation2.Animals;
 
@@ -39,7 +38,7 @@ public abstract class Omnivore : Animal
         }
     }
 
-    protected void Hunt(Herbivore herbivore)
+    private void Hunt(Herbivore herbivore)
     {
         if (herbivore.IsHidden) return;
         bool dodged = false;
@@ -57,8 +56,66 @@ public abstract class Omnivore : Animal
         }
     }
 
-    protected void Hunt(Carnivore carnivore)
+    private void Hunt(Carnivore carnivore)
     {
+        Console.WriteLine($"{GetType().ToString().Split('.').Last()} is hunting a {carnivore.GetType().ToString().Split('.').Last()}.");
+        bool dodged = false;
+        bool countered = false;
+        int attack = (int)(Random.Next(1, 51) * Strength);
+        if (carnivore.Speed > Speed)
+        {
+            dodged = Random.Next(1, 11) > (carnivore.Speed - Speed) * 10;
+        }
+        if (dodged) return;
+        if (carnivore.Strength > Strength)
+        {
+            countered = Random.Next(1, 11) > (carnivore.Strength - Strength) * 10;
+        }
+
+        if (!countered)
+        {
+            carnivore.Health -= attack;
+            if (carnivore.Health <= 0)
+            {
+                Console.WriteLine($"{GetType().ToString().Split('.').Last()} killed {carnivore.GetType().ToString().Split('.').Last()}.");
+                Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (carnivore.Size + 1) * 5 + 1) / 10);
+            }
+        }
+        else
+        {
+            int counter = (int)(Random.Next(1, 21) * carnivore.Strength);
+            if (carnivore.Speed > Speed)
+            {
+                Health -= counter;
+                if (Health <= 0)
+                {
+                    Console.WriteLine($"{carnivore.GetType().ToString().Split('.').Last()} killed {GetType().ToString().Split('.').Last()}.");
+                    return;
+                }
+                carnivore.Health -= attack;
+                if (carnivore.Health <= 0)
+                {
+                    Console.WriteLine($"{GetType().ToString().Split('.').Last()} killed {carnivore.GetType().ToString().Split('.').Last()}.");
+                    Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (carnivore.Size + 1) * 5 + 1) / 10);
+                }
+            }
+            else
+            {
+                carnivore.Health -= attack;
+                if (carnivore.Health <= 0)
+                {
+                    Console.WriteLine($"{GetType().ToString().Split('.').Last()} killed {carnivore.GetType().ToString().Split('.').Last()}.");
+                    Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (carnivore.Size + 1) * 5 + 1) / 10);
+                    return;
+                }
+                Health -= counter;
+                if (Health <= 0)
+                {
+                    Console.WriteLine($"{carnivore.GetType().ToString().Split('.').Last()} killed {GetType().ToString().Split('.').Last()}.");
+                    return;
+                }
+            }
+        }
     }
 
     protected override void MakeDecision(List<int> priorities, List<TileInfo> tileInfos, Terrain.Terrain[][] map,
@@ -117,9 +174,25 @@ public abstract class Omnivore : Animal
                 {
                     var infos = tileInfos.Select(info => info).Where(info => info.Content is 4 or 6).ToList();
                     //Move(a.X, a.Y);
-                    foreach (var info in infos)
+                    
+                    var possibleTargets = infos
+                        .Select(info => animals[info.Y][info.X])
+                        .Where(animal => animal != null && animal.Size <= Size)
+                        .ToList();
+
+                    if (possibleTargets.Count > 0)
                     {
-                        
+                        Animal chosenTarget = possibleTargets[Random.Next(possibleTargets.Count)];
+                        Move(chosenTarget.X, chosenTarget.Y);
+
+                        if (chosenTarget is Herbivore herbivore)
+                        {
+                            Hunt(herbivore);
+                        }
+                        else if (chosenTarget is Carnivore carnivore)
+                        {
+                            Hunt(carnivore);
+                        }
                     }
                     acted = true;
                     break;

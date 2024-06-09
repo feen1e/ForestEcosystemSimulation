@@ -13,7 +13,8 @@ public class Racoon : Omnivore
 
     public Racoon()
     {
-        Health = Random.Next(5, 16);
+        MaxHealth = Random.Next(5, 16);
+        Health = MaxHealth;
         Speed = Random.NextDouble() * (0.6 - 0.2) + 0.2;
         Size = 0;
         CanClimb = true;
