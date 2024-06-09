@@ -19,8 +19,8 @@ public class Terrain
                 [new Tree(), new Berries(), new Burrow()];
             Contents = d switch
             {
-                < 0.5 => null,
-                < 0.8 => possibleContents[0],
+                < 0.4 => null,
+                < 0.5 => possibleContents[0],
                 < 0.9 => possibleContents[1],
                 _ => possibleContents[2]
             };
@@ -32,7 +32,7 @@ public class Terrain
                 [new Fish()];
             Contents = d switch
             {
-                < 0.75 => null,
+                < 0.4 => null,
                 _ => possibleContents[0]
             };
         }
@@ -43,8 +43,8 @@ public class Terrain
                 [new Grass(), new Burrow()];
             Contents = d switch
             {
-                < 0.70 => null,
-                < 0.90 => possibleContents[0],
+                < 0.3 => null,
+                < 0.8 => possibleContents[0],
                 _ => possibleContents[1]
             };
         }

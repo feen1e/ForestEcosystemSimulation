@@ -2,8 +2,7 @@ namespace ForestEcosystemSimulation2.TileContents.Food;
 
 public abstract class Food : TileContents
 {
-
-    protected bool IsPlant;
+    public bool IsPlant;
     protected int MaxCount;
     public int Count;
     protected int TimeToRegen;
