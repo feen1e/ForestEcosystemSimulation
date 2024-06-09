@@ -1,4 +1,5 @@
 ﻿using ForestEcosystemSimulation2.Animals;
+using ForestEcosystemSimulation2.TileContents.Food;
 
 namespace ForestEcosystemSimulation2;
 
@@ -8,6 +9,7 @@ public class ForestEcosystemSimulation
     private int Height { get; set; }
     private Terrain.Terrain[][] Tiles { get; set; }
     private Animal[][] Animals { get; set; } = null;
+
     private int _iterations = 10;
     private static int NumAll { get; set; }
     private int NumHare { get; set; }
@@ -36,8 +38,6 @@ public class ForestEcosystemSimulation
         }
 
         Random random = new Random();
-        NumAll = 0;
-        NumAll += NumHare + NumDeer + NumRacoon + NumBear + NumbFox + NumWolf;
         AddSpecificAnimal(random, NumHare, () => new Hare());
         AddSpecificAnimal(random, NumDeer, () => new Deer());
         AddSpecificAnimal(random, NumRacoon, () => new Racoon());
@@ -74,13 +74,13 @@ public class ForestEcosystemSimulation
         simulation.NumBear = 2;
         simulation.NumbFox = 2;
         simulation.NumWolf = 2;
-        simulation._iterations = 50;
+        simulation._iterations = 100;
         simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
         simulation.AddAnimals();
-        // Console.WriteLine($"{simulation.Animals.Length} and {simulation.Animals[0].Length}\n" +
-        //                   $"{simulation.Height} and {simulation.Width}");
+        Console.WriteLine($"{simulation.Animals.Length} and {simulation.Animals[0].Length}\n" +
+                          $"{simulation.Height} and {simulation.Width}");
         simulation.PrintMap();
-        //simulation.CheckMap();
+        simulation.CheckMap();
         PrintControls();
 
         char input = Console.ReadKey().KeyChar;
@@ -117,6 +117,12 @@ public class ForestEcosystemSimulation
             for (int j = 0; j < Width; ++j)
             {
                 int t = Tiles[i][j].Type;
+                //int c = _tiles[i][j]._contents?._tileType ?? -1;
+                // if (_tiles[i][j]._contents?._tileType == 0)
+                // {
+                //     t = 3;
+                // }
+
                 char s = ' ';
                 if (Animals is not null)
                 {
@@ -128,6 +134,22 @@ public class ForestEcosystemSimulation
 
                 if (t == 0)
                 {
+                    /*if (c == 0)
+                    {
+                        Console.Write($"\u001b[101m {s} \u001b[0m");
+                    }
+                    else if (c == 1)
+                    {
+                        Console.Write($"\u001b[103m {s} \u001b[0m");
+                    }
+                    else if (c == 2)
+                    {
+                        Console.Write($"\u001b[100m {s} \u001b[0m");
+                    }
+                    else
+                    {
+                        Console.Write($"\u001b[42m {s} \u001b[0m");
+                    }*/
                     Console.Write($"\u001b[42m {s} \u001b[0m");
                 }
                 else if (t == 1)
@@ -164,11 +186,6 @@ public class ForestEcosystemSimulation
                 }
                 UpdateAnimalPositions();
                 PrintMap();
-                //Console.WriteLine(NumAll);
-                if (NumAll <= 0)
-                {
-                    return;
-                }
             }
         }
     }
@@ -200,11 +217,7 @@ public class ForestEcosystemSimulation
             for (int x = 0; x < Width; x++)
             {
                 if (Animals[y][x] == null) continue;
-                if (Animals[y][x].Health <= 0)
-                {
-                    NumAll -= 1;
-                    continue;
-                }
+                if (Animals[y][x].Health <= 0) continue;
                 var animal = Animals[y][x];
                 int newX = animal.X;
                 int newY = animal.Y;
@@ -221,7 +234,6 @@ public class ForestEcosystemSimulation
 
                           r - regenerate map and animals
                           a - regenerate animals
-                          s - run simulation (wip)
                           e - end
 
                           """);
