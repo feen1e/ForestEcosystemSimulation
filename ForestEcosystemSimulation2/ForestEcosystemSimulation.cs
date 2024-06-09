@@ -74,13 +74,13 @@ public class ForestEcosystemSimulation
         simulation.NumBear = 2;
         simulation.NumbFox = 2;
         simulation.NumWolf = 2;
-        simulation._iterations = 100;
+        simulation._iterations = 50;
         simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
         simulation.AddAnimals();
-        Console.WriteLine($"{simulation.Animals.Length} and {simulation.Animals[0].Length}\n" +
-                          $"{simulation.Height} and {simulation.Width}");
+        // Console.WriteLine($"{simulation.Animals.Length} and {simulation.Animals[0].Length}\n" +
+        //                   $"{simulation.Height} and {simulation.Width}");
         simulation.PrintMap();
-        simulation.CheckMap();
+        //simulation.CheckMap();
         PrintControls();
 
         char input = Console.ReadKey().KeyChar;
@@ -117,12 +117,6 @@ public class ForestEcosystemSimulation
             for (int j = 0; j < Width; ++j)
             {
                 int t = Tiles[i][j].Type;
-                //int c = _tiles[i][j]._contents?._tileType ?? -1;
-                // if (_tiles[i][j]._contents?._tileType == 0)
-                // {
-                //     t = 3;
-                // }
-
                 char s = ' ';
                 if (Animals is not null)
                 {
@@ -134,22 +128,6 @@ public class ForestEcosystemSimulation
 
                 if (t == 0)
                 {
-                    /*if (c == 0)
-                    {
-                        Console.Write($"\u001b[101m {s} \u001b[0m");
-                    }
-                    else if (c == 1)
-                    {
-                        Console.Write($"\u001b[103m {s} \u001b[0m");
-                    }
-                    else if (c == 2)
-                    {
-                        Console.Write($"\u001b[100m {s} \u001b[0m");
-                    }
-                    else
-                    {
-                        Console.Write($"\u001b[42m {s} \u001b[0m");
-                    }*/
                     Console.Write($"\u001b[42m {s} \u001b[0m");
                 }
                 else if (t == 1)
@@ -234,6 +212,7 @@ public class ForestEcosystemSimulation
 
                           r - regenerate map and animals
                           a - regenerate animals
+                          s - start simulation (wip)
                           e - end
 
                           """);
