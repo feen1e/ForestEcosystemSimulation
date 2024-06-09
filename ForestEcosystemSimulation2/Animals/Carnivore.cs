@@ -1,8 +1,10 @@
-﻿namespace ForestEcosystemSimulation2.Animals;
+﻿using ForestEcosystemSimulation2.TileContents.Food;
+
+namespace ForestEcosystemSimulation2.Animals;
 
 public class Carnivore : Animal
 {
-    protected double Strength { get; init; }
+    public double Strength { get; init; }
 
     protected Carnivore()
     {
@@ -12,6 +14,7 @@ public class Carnivore : Animal
     protected void Hunt(Herbivore herbivore)
     {
         if (herbivore.IsHidden) return;
+        Console.WriteLine($"{GetType().ToString().Split('.').Last()} is hunting a {herbivore.GetType().ToString().Split('.').Last()}.");
         bool dodged = false;
         int attack = (int)(Random.Next(1, 51) * Strength);
         if (herbivore.Speed > Speed)
@@ -23,12 +26,14 @@ public class Carnivore : Animal
         herbivore.Health -= attack;
         if (herbivore.Health <= 0)
         {
+            Console.WriteLine($"{GetType().ToString().Split('.').Last()} killed {herbivore.GetType().ToString().Split('.').Last()}.");
             Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (herbivore.Size + 1) * 5 + 1) / 10);
         }
     }
 
     protected void Hunt(Omnivore omnivore)
     {
+        Console.WriteLine($"{GetType().ToString().Split('.').Last()} is hunting a {omnivore.GetType().ToString().Split('.').Last()}.");
         bool dodged = false;
         int attack = (int)(Random.Next(1, 51) * Strength);
         if (omnivore.Speed > Speed)
@@ -40,7 +45,103 @@ public class Carnivore : Animal
         omnivore.Health -= attack;
         if (omnivore.Health <= 0)
         {
+            Console.WriteLine($"{GetType().ToString().Split('.').Last()} killed {omnivore.GetType().ToString().Split('.').Last()}.");
             Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (omnivore.Size + 1) * 5 + 1) / 10);
+        }
+    }
+    
+    protected override void MakeDecision(List<int> priorities, List<TileInfo> tileInfos, Terrain.Terrain[][] map,
+        Animal[][] animals)
+    {
+        base.MakeDecision(priorities, tileInfos, map, animals);
+        /*
+         * Hunt - 3
+         */
+        if (tileInfos.Any(info => info.Content is 4 or 6))
+        {
+            priorities.Insert(0, 3);
+        }
+
+        bool acted = false;
+        foreach (var priority in priorities)
+        {
+            if (Energy < 0.15 || Hunger > 0.85 || Thirst > 0.85)
+            {
+                if (priority == 0)
+                {
+                    Rest();
+                    acted = true;
+                    break;
+                }
+                else if (priority == 1)
+                {
+                    if (tileInfos.Any(info => info.Content == 0))
+                    {
+                        // food/eat
+                        var meat = tileInfos
+                            .Where(info => info.Content == 0 && map[info.Y][info.X].Contents is Food food && !food.IsPlant)
+                            .OrderBy(info => Math.Abs(info.X - X) + Math.Abs(info.Y - Y))
+                            .ToList();
+                        if (meat.Count > 0)
+                        {
+                            var food = map[meat[0].Y][meat[0].X].Contents as Food;
+                            Move(meat[0].X, meat[0].Y);
+                            Eat(food);
+
+                            acted = true;    
+                            break;
+                        }
+                    }
+                }
+                else if (priority == 2)
+                {
+                    // water/drink
+                    if (tileInfos.Any(info => info.Content == 3))
+                    {
+                        var a = tileInfos.Select(info => info).First(info => info.Content == 3);
+                        Move(a.X, a.Y);
+                        Drink();
+                        acted = true;
+                        break;
+                    }
+                }
+            }
+            else if (priority == 3)
+            {
+                // animal/hunt
+                if (tileInfos.Any(info => info.Content == 2))
+                {
+                    var infos = tileInfos.Select(info => info).Where(info => info.Content is 4 or 6).ToList();
+                    //Move(a.X, a.Y);
+                    
+                    var possibleTargets = infos
+                        .Select(info => animals[info.Y][info.X])
+                        .Where(animal => animal != null && animal.Size <= Size)
+                        .ToList();
+
+                    if (possibleTargets.Count > 0)
+                    {
+                        Animal chosenTarget = possibleTargets[Random.Next(possibleTargets.Count)];
+                        Move(chosenTarget.X, chosenTarget.Y);
+
+                        if (chosenTarget is Herbivore herbivore)
+                        {
+                            Hunt(herbivore);
+                        }
+                        else if (chosenTarget is Omnivore omnivore)
+                        {
+                            Hunt(omnivore);
+                        }
+                    }
+                    acted = true;
+                    break;
+                }
+            }
+        }
+
+        if (!acted)
+        {
+            Move(map.Length, map[0].Length, map);
         }
     }
 }

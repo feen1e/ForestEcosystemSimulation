@@ -11,7 +11,8 @@ public class Deer : Herbivore
 
     public Deer()
     {
-        Health = Random.Next(10, 21);
+        MaxHealth = Random.Next(10, 21);
+        Health = MaxHealth;
         Speed = Random.NextDouble() * (0.8 - 0.4) + 0.4;
         Size = 1;
         CanHide = false;

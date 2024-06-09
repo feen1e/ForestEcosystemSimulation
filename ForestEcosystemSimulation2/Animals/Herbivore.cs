@@ -89,10 +89,29 @@ public abstract class Herbivore : Animal
         }
     }
 
+    protected override void Move(int height, int width, Terrain.Terrain[][] map)
+    {
+        var tileContents = map[Y][X].Contents;
+        bool isBurrow = false;
+        if (tileContents != null)
+        {
+            isBurrow = tileContents.TileType == 2;
+        }
+
+        if (isBurrow && IsHidden)
+        {
+            var burrow = tileContents as Burrow;
+            burrow.Occupied();
+            IsHidden = false;
+        }
+        base.Move(height, width, map);
+    }
+
     private void Hide(Burrow burrow)
     {
         if (CanHide && burrow != null && !burrow.IsOccupied)
         {
+            Console.WriteLine($"{GetType().ToString().Split('.').Last()} hides.");
             IsHidden = true;
             burrow.Occupied();
         }

@@ -13,7 +13,8 @@ public class Bear : Omnivore
 
     public Bear()
     {
-        Health = Random.Next(20, 31);
+        MaxHealth = Random.Next(20, 31);
+        Health = MaxHealth;
         Speed = Random.NextDouble() * 0.5;
         Size = 1;
         CanClimb = false;

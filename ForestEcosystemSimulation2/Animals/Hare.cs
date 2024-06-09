@@ -11,7 +11,8 @@ public class Hare : Herbivore
 
     public Hare()
     {
-        Health = Random.Next(1, 10);
+        MaxHealth = Random.Next(1, 10);
+        Health = MaxHealth;
         Speed = Random.NextDouble() * (0.7 - 0.5) + 0.5;
         Size = 0;
         CanHide = true;

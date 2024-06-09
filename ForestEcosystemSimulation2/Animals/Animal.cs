@@ -5,6 +5,7 @@ namespace ForestEcosystemSimulation2.Animals;
 public abstract class Animal
 {
     protected static readonly Random Random = new();
+    protected int MaxHealth { get; init; }
     protected internal int Health { get; set; }
     protected double Hunger { get; set; } = 0;
     protected double Thirst { get; set; } = 0;
@@ -27,23 +28,23 @@ public abstract class Animal
             newY = Y + Random.Next(-1, 2);
             newX = Math.Max(0, Math.Min(newX, width - 1));
             newY = Math.Max(0, Math.Min(newY, height - 1));
-        } while (map[newY][newX].Type == 1 || count < (Speed + Energy) * 10);
+        } while (map[newY][newX].Type == 1 && count < (Speed + Energy) * 10);
 
         X = newX;
         Y = newY;
-        Console.WriteLine($"{GetType()} moved to [{X}, {Y}].");
+        Console.WriteLine($"{GetType().ToString().Split('.').Last()} moved to [{X}, {Y}].");
     }
 
     protected void Move(int x, int y)
     {
-        Console.WriteLine($"{GetType()} moved to [{x}, {y}].");
+        Console.WriteLine($"{GetType().ToString().Split('.').Last()} moved to [{x}, {y}].");
         X = x;
         Y = y;
     }
 
     protected void Eat(Food food)
     {
-        Console.WriteLine($"{GetType()} at [{X}, {Y}] is eating {food.GetType()}.");
+        Console.WriteLine($"{GetType().ToString().Split('.').Last()} at [{X}, {Y}] is eating {food.GetType().ToString().Split('.').Last()}.");
         int amount = Random.Next(0, food.Count + 1);
         Hunger = Math.Max(0, Hunger - (double)amount / 10);
         food.Eaten(amount);
@@ -51,13 +52,13 @@ public abstract class Animal
 
     protected void Drink()
     {
-        Console.WriteLine($"{GetType()} at [{X}, {Y}] is drinking water.");
+        Console.WriteLine($"{GetType().ToString().Split('.').Last()} at [{X}, {Y}] is drinking water.");
         Thirst = Math.Max(0, Thirst - Random.NextDouble());
     }
 
     protected void Rest()
     {
-        Console.WriteLine($"{GetType()} at [{X}, {Y}] is resting.");
+        Console.WriteLine($"{GetType().ToString().Split('.').Last()} at [{X}, {Y}] is resting.");
         Energy = Math.Min(Random.NextDouble() + Energy, 1);
     }
 
@@ -133,10 +134,14 @@ public abstract class Animal
         {
             Health -= 1;
         }
-
-        if (Health == 0)
+        else
         {
-            Console.WriteLine($"{GetType()} died.");
+            Health = Math.Min(MaxHealth, Health + 1);
+        }
+        
+        if (Health <= 0)
+        {
+            Console.WriteLine($"{GetType().ToString().Split('.').Last()} died.");
         }
     }
 
