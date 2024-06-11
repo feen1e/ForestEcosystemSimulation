@@ -48,6 +48,10 @@ public class Carnivore : Animal
             Console.WriteLine($"{GetType().ToString().Split('.').Last()} killed {omnivore.GetType().ToString().Split('.').Last()}.");
             Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (omnivore.Size + 1) * 5 + 1) / 10);
         }
+        else
+        {
+            Console.WriteLine($"{omnivore.GetType().ToString().Split('.').Last()} didn't die");
+        }
     }
     
     protected override void MakeDecision(List<int> priorities, List<TileInfo> tileInfos, Terrain.Terrain[][] map,
@@ -57,7 +61,7 @@ public class Carnivore : Animal
         /*
          * Hunt - 3
          */
-        if (tileInfos.Any(info => info.Content is 4 or 6))
+        if (tileInfos.Any(info => info.Content is 4 or 5))
         {
             priorities.Insert(0, 3);
         }
@@ -111,7 +115,8 @@ public class Carnivore : Animal
                 // animal/hunt
                 if (tileInfos.Any(info => info.Content == 2))
                 {
-                    var infos = tileInfos.Select(info => info).Where(info => info.Content is 4 or 6).ToList();
+                    //Console.WriteLine("Hunt begins");
+                    var infos = tileInfos.Select(info => info).Where(info => info.Content is 4 or 5).ToList();
                     //Move(a.X, a.Y);
                     
                     var possibleTargets = infos
@@ -121,16 +126,19 @@ public class Carnivore : Animal
 
                     if (possibleTargets.Count > 0)
                     {
+                        //Console.WriteLine("Target found");
                         Animal chosenTarget = possibleTargets[Random.Next(possibleTargets.Count)];
                         Move(chosenTarget.X, chosenTarget.Y);
-
-                        if (chosenTarget is Herbivore herbivore)
+                        Console.WriteLine(chosenTarget + " " + chosenTarget.GetType());
+                        if (chosenTarget.GetType() == typeof(Deer) || chosenTarget.GetType() == typeof(Hare))
                         {
-                            Hunt(herbivore);
+                            Hunt((Herbivore)chosenTarget);
+                            //Console.WriteLine("Hunting herbivore");
                         }
-                        else if (chosenTarget is Omnivore omnivore)
+                        else if (chosenTarget.GetType() == typeof(Bear) || chosenTarget.GetType() == typeof(Racoon))
                         {
-                            Hunt(omnivore);
+                            //Console.WriteLine("Hunting omnivore");
+                            Hunt((Omnivore)chosenTarget);
                         }
                     }
                     acted = true;
