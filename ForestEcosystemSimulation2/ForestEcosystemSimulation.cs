@@ -8,7 +8,8 @@ public class ForestEcosystemSimulation
     private int Width { get; set; }
     private int Height { get; set; }
     private Terrain.Terrain[][] Tiles { get; set; }
-    private Animal[][] Animals { get; set; } = null;
+    //private Animal[][] Animals { get; set; } = null;
+    private List<Animal> Animals { get; set; } = [];
 
     private int _iterations = 10;
     private static int NumAll { get; set; }
@@ -31,12 +32,12 @@ public class ForestEcosystemSimulation
 
     private void AddAnimals()
     {
-        Animals = new Animal[Height][];
+        /*Animals = new Animal[Height][];
         for (int i = 0; i < Height; i++)
         {
             Animals[i] = new Animal[Width];
-        }
-
+        }*/
+        Animals.Clear();
         Random random = new Random();
         AddSpecificAnimal(random, NumHare, () => new Hare());
         AddSpecificAnimal(random, NumDeer, () => new Deer());
@@ -44,6 +45,7 @@ public class ForestEcosystemSimulation
         AddSpecificAnimal(random, NumBear, () => new Bear());
         AddSpecificAnimal(random, NumbFox, () => new Fox());
         AddSpecificAnimal(random, NumWolf, () => new Wolf());
+        UpdateAnimalPositions();
     }
 
     private void AddSpecificAnimal(Random random, int numAnimals, Func<Animal> createAnimal)
@@ -57,9 +59,13 @@ public class ForestEcosystemSimulation
                 x = random.Next(0, Width);
             } while (Tiles[y][x].Type == 1);
 
-            Animals[y][x] = createAnimal();
+            Animal createdAnimal = createAnimal();
+            createdAnimal.X = x;
+            createdAnimal.Y = y;
+            Animals.Add(createdAnimal);
+            /*Animals[y][x] = createAnimal();
             Animals[y][x].X = x;
-            Animals[y][x].Y = y;
+            Animals[y][x].Y = y;*/
         }
     }
 
@@ -79,7 +85,10 @@ public class ForestEcosystemSimulation
         simulation.AddAnimals();
         // Console.WriteLine($"{simulation.Animals.Length} and {simulation.Animals[0].Length}\n" +
         //                   $"{simulation.Height} and {simulation.Width}");
-        simulation.PrintMap();
+        foreach (var animal in simulation.Animals)
+        {
+            Console.WriteLine($"Animal X: {animal.X}, Y: {animal.Y}");
+        }        simulation.PrintMap();
         //simulation.CheckMap();
         PrintControls();
 
@@ -112,17 +121,27 @@ public class ForestEcosystemSimulation
     private void PrintMap()
     {
         Console.WriteLine();
+        int index = 0;
         for (int i = 0; i < Height; ++i)
         {
             for (int j = 0; j < Width; ++j)
             {
                 int t = Tiles[i][j].Type;
                 char s = ' ';
-                if (Animals is not null)
+                /*if (Animals is not null)
                 {
                     if (Animals[i][j] is not null)
                     {
                         s = _animalSymbols.TryGetValue(Animals[i][j].GetType(), out char symbol) ? symbol : ' ';
+                    }
+                }*/
+
+                if (index < Animals.Count)
+                {
+                    if (Animals[index].Y == i && Animals[index].X == j)
+                    {
+                        s = _animalSymbols.TryGetValue(Animals[index].GetType(), out char symbol) ? symbol : ' ';
+                        index += 1;
                     }
                 }
 
@@ -153,7 +172,17 @@ public class ForestEcosystemSimulation
     {
         for (int i = 0; i < iterations; i++)
         {
-            if (Animals != null)
+            if (Animals.Count > 0)
+            {
+                foreach (var animal in Animals)
+                {
+                    animal.Scout(Height, Width, Tiles, Animals);
+                }
+                UpdateAnimalPositions();
+                PrintMap();
+            }
+            
+            /*if (Animals != null)
             {
                 foreach (var animalY in Animals)
                 {
@@ -164,7 +193,7 @@ public class ForestEcosystemSimulation
                 }
                 UpdateAnimalPositions();
                 PrintMap();
-            }
+            }*/
         }
     }
 
@@ -183,7 +212,7 @@ public class ForestEcosystemSimulation
 
     private void UpdateAnimalPositions()
     {
-        if (Animals == null) return;
+        /*if (Animals == null) return;
         Animal[][] newAnimals = new Animal[Height][];
         for (int i = 0; i < Height; i++)
         {
@@ -203,7 +232,21 @@ public class ForestEcosystemSimulation
             }
         }
 
-        Animals = newAnimals;
+        Animals = newAnimals;*/
+        
+        if (Animals.Count == 0) return;
+        List<Animal> sortedList = Animals
+            .OrderBy(animal => animal.Y)
+            .ThenBy(animal => animal.X)
+            .ToList();
+        List<Animal> deadAnimals = sortedList
+            .Where(animal => animal.Health <= 0).ToList();
+        foreach (var deadAnimal in deadAnimals)
+        {
+            sortedList.Remove(deadAnimal);
+            
+        }
+        Animals = sortedList;
     }
 
     private static void PrintControls()

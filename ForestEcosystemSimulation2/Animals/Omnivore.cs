@@ -125,7 +125,7 @@ public abstract class Omnivore : Animal
     }
 
     protected override void MakeDecision(List<int> priorities, List<TileInfo> tileInfos, Terrain.Terrain[][] map,
-        Animal[][] animals)
+        List<Animal> animals)
     {
         base.MakeDecision(priorities, tileInfos, map, animals);
         /*
@@ -180,11 +180,12 @@ public abstract class Omnivore : Animal
                 {
                     var infos = tileInfos.Select(info => info).Where(info => info.Content is 4 or 6).ToList();
                     //Move(a.X, a.Y);
-                    
+
                     var possibleTargets = infos
-                        .Select(info => animals[info.Y][info.X])
-                        .Where(animal => animal != null && animal.Size <= Size)
+                        .Where(info => animals.Any(animal => animal.X == info.X && animal.Y == info.Y && animal.Size <= Size))
+                        .Select(info => animals.First(animal => animal.X == info.X && animal.Y == info.Y))
                         .ToList();
+                    Console.WriteLine(possibleTargets.Count);
 
                     if (possibleTargets.Count > 0)
                     {

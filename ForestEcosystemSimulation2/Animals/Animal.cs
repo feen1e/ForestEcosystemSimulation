@@ -44,7 +44,8 @@ public abstract class Animal
 
     protected void Eat(Food food)
     {
-        Console.WriteLine($"{GetType().ToString().Split('.').Last()} at [{X}, {Y}] is eating {food.GetType().ToString().Split('.').Last()}.");
+        Console.WriteLine(
+            $"{GetType().ToString().Split('.').Last()} at [{X}, {Y}] is eating {food.GetType().ToString().Split('.').Last()}.");
         int amount = Random.Next(0, food.Count + 1);
         Hunger = Math.Max(0, Hunger - (double)amount / 10);
         food.Eaten(amount);
@@ -62,7 +63,7 @@ public abstract class Animal
         Energy = Math.Min(Random.NextDouble() + Energy, 1);
     }
 
-    public void Scout(int height, int width, Terrain.Terrain[][] map, Animal[][] animals)
+    public void Scout(int height, int width, Terrain.Terrain[][] map, List<Animal> animals)
     {
         List<TileInfo> tileInfos = new List<TileInfo>();
         int radius = 2;
@@ -74,7 +75,7 @@ public abstract class Animal
                 int newX = X + x;
                 if (newX >= 0 && newX < width && newY >= 0 && newY < height)
                 {
-                    if (animals[newY][newX] == null)
+                    if (!animals.Any(animal => animal.X == newX && animal.Y == newY))
                     {
                         var tileType = map[newY][newX].Type;
                         var tileContents = map[newY][newX].Contents;
@@ -90,12 +91,17 @@ public abstract class Animal
                     }
                     else
                     {
-                        var animaltype = animals[newY][newX].Diet + 4;
-                        tileInfos.Add(new TileInfo(animaltype, newX, newY));
+                        var animal = animals.FirstOrDefault(animal => animal.X == newX && animal.Y == newY);
+                        if (animal != null)
+                        {
+                            var animaltype = animal.Diet + 4;
+                            tileInfos.Add(new TileInfo(animaltype, newX, newY));
+                        }
                     }
                 }
             }
         }
+
         MakeDecision(Priority, tileInfos, map, animals);
         UsedEnergy();
 
@@ -106,7 +112,8 @@ public abstract class Animal
         }*/
     }
 
-    protected virtual void MakeDecision(List<int> priorities, List<TileInfo> tileInfos, Terrain.Terrain[][] map, Animal[][] animals)
+    protected virtual void MakeDecision(List<int> priorities, List<TileInfo> tileInfos, Terrain.Terrain[][] map,
+        List<Animal> animals)
     {
         /*
          * 0 - rest
@@ -138,7 +145,7 @@ public abstract class Animal
         {
             Health = Math.Min(MaxHealth, Health + 1);
         }
-        
+
         if (Health <= 0)
         {
             Console.WriteLine($"{GetType().ToString().Split('.').Last()} died.");

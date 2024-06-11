@@ -14,13 +14,13 @@ public abstract class Herbivore : Animal
     }
 
     protected override void MakeDecision(List<int> priorities, List<TileInfo> tileInfos, Terrain.Terrain[][] map,
-        Animal[][] animals)
+        List<Animal> animals)
     {
         base.MakeDecision(priorities, tileInfos, map, animals);
         /*
          * Hide - 3
          */
-        if (tileInfos.Any(info => info.Content is 4 or 5))
+        if (tileInfos.Any(info => info.Content is 5 or 6))
         {
             priorities.Insert(0, 3);
         }
