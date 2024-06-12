@@ -13,15 +13,25 @@ public abstract class Food : TileContents
         TileType = 0;
     }
 
-    public void Regenerate()
+    private void Regenerate()
     {
         Count = MaxCount;
         TimeSinceRegen = 0;
+        Console.WriteLine($"{GetType().ToString().Split('.').Last()} regenerated.");
     }
 
     public void Eaten(int amount)
     {
         Count = Math.Max(0, Count - amount);
+        Console.WriteLine($"{amount} of {GetType().ToString().Split('.').Last()} eaten.");
     }
 
+    public void AddTime()
+    {
+        TimeSinceRegen += 1;
+        if (TimeSinceRegen >= TimeToRegen)
+        {
+            Regenerate();
+        }
+    }
 }

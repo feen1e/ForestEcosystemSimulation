@@ -72,8 +72,8 @@ public class ForestEcosystemSimulation
     public static void Main()
     {
         ForestEcosystemSimulation simulation = new ForestEcosystemSimulation();
-        simulation.Width = 35;
-        simulation.Height = 24;
+        simulation.Width = 15;
+        simulation.Height = 10;
         simulation.NumHare = 2;
         simulation.NumDeer = 2;
         simulation.NumRacoon = 2;
@@ -89,7 +89,7 @@ public class ForestEcosystemSimulation
         {
             Console.WriteLine($"Animal X: {animal.X}, Y: {animal.Y}");
         }        simulation.PrintMap();
-        //simulation.CheckMap();
+        simulation.CheckMap();
         PrintControls();
 
         char input = Console.ReadKey().KeyChar;
@@ -170,18 +170,26 @@ public class ForestEcosystemSimulation
 
     private void RunSimulation(int iterations)
     {
+        if (Animals.Count == 0)
+        {
+            Console.WriteLine("There are no animals on the map.");
+            return;
+        }
         for (int i = 0; i < iterations; i++)
         {
-            if (Animals.Count > 0)
+            if (Animals.Count <= 0)
             {
-                foreach (var animal in Animals)
-                {
-                    animal.Scout(Height, Width, Tiles, Animals);
-                }
-                UpdateAnimalPositions();
-                PrintMap();
+                Console.WriteLine("All animals died. Simulation ended.");
+                return;
             }
-            
+            foreach (var animal in Animals)
+            {
+                animal.Scout(Height, Width, Tiles, Animals);
+            }
+            IncreaseTimeSinceRegen();
+            UpdateAnimalPositions();
+            PrintMap();
+
             /*if (Animals != null)
             {
                 foreach (var animalY in Animals)
@@ -247,6 +255,20 @@ public class ForestEcosystemSimulation
             
         }
         Animals = sortedList;
+    }
+    
+    private void IncreaseTimeSinceRegen()
+    {
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                if (Tiles[y][x].Contents is Food food)
+                {
+                    food.AddTime();
+                }
+            }
+        }
     }
 
     private static void PrintControls()
