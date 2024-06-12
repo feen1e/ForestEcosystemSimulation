@@ -1,5 +1,8 @@
 namespace ForestEcosystemSimulation.Animals;
 
+/// <summary>
+/// Represents a bear in the forest ecosystem simulation.
+/// </summary>
 public class Bear : Omnivore
 {
     /*

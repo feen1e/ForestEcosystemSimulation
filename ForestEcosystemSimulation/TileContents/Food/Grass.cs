@@ -1,5 +1,8 @@
 namespace ForestEcosystemSimulation.TileContents.Food;
 
+/// <summary>
+/// Represents a grass food source in the forest ecosystem simulation.
+/// </summary>
 public class Grass : Food
 {
     public Grass()

@@ -1,5 +1,8 @@
 namespace ForestEcosystemSimulation.TileContents.Food;
 
+/// <summary>
+/// Represents a fish food source in the forest ecosystem simulation.
+/// </summary>
 public class Fish : Food
 {
     public Fish()

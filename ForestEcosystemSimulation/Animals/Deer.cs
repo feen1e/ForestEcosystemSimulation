@@ -1,5 +1,8 @@
 namespace ForestEcosystemSimulation.Animals;
 
+/// <summary>
+/// Represents a deer in the forest ecosystem simulation.
+/// </summary>
 public class Deer : Herbivore
 {
     /*

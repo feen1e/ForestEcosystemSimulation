@@ -3,16 +3,33 @@ using ForestEcosystemSimulation.TileContents.Food;
 
 namespace ForestEcosystemSimulation.Animals;
 
+/// <summary>
+/// Abstract base class representing a herbivorous animal in the forest ecosystem simulation.
+/// </summary>
 public abstract class Herbivore : Animal
 {
-    protected bool CanHide;
-    public bool IsHidden = false;
+    /// <summary>
+    /// Indicates whether this herbivore can hide in burrows.
+    /// </summary>
+    protected bool CanHide { get; init; }
+    
+    /// <summary>
+    /// Indicates whether this herbivore is currently hidden in a burrow.
+    /// </summary>
+    public bool IsHidden { get; private set; } = false;
 
     protected Herbivore()
     {
         Diet = 0;
     }
 
+    /// <summary>
+    /// Determines the herbivore's next action based on its priorities and surrounding environment.
+    /// </summary>
+    /// <param name="priorities">List of actions sorted by priority.</param>
+    /// <param name="tileInfos">Information about surrounding tiles.</param>
+    /// <param name="map">The simulation map.</param>
+    /// <param name="animals">List of animals in the simulation.</param>
     protected override void MakeDecision(List<int> priorities, List<TileInfo> tileInfos, Terrain.Terrain[][] map,
         List<Animal> animals)
     {
@@ -20,6 +37,8 @@ public abstract class Herbivore : Animal
         /*
          * Hide - 3
          */
+        
+        // Prioritize hiding if omnivores or carnivores are nearby
         if (tileInfos.Any(info => info.Content is 5 or 6))
         {
             priorities.Insert(0, 3);
@@ -89,6 +108,12 @@ public abstract class Herbivore : Animal
         }
     }
 
+    /// <summary>
+    /// Overrides the base Move method to handle leaving a burrow if hidden.
+    /// </summary>
+    /// <param name="height">The height of the map.</param>
+    /// <param name="width">The width of the map.</param>
+    /// <param name="map">The simulation map.</param>
     protected override void Move(int height, int width, Terrain.Terrain[][] map)
     {
         var tileContents = map[Y][X].Contents;
@@ -107,11 +132,15 @@ public abstract class Herbivore : Animal
         base.Move(height, width, map);
     }
 
+    /// <summary>
+    /// Simulates the herbivore hiding in a burrow.
+    /// </summary>
+    /// <param name="burrow">The burrow to hide in.</param>
     private void Hide(Burrow burrow)
     {
         if (CanHide && burrow != null && !burrow.IsOccupied)
         {
-            Console.WriteLine($"{GetType().ToString().Split('.').Last()} hides.");
+            Console.WriteLine($"{GetType().Name} hides.");
             IsHidden = true;
             burrow.Occupied();
         }

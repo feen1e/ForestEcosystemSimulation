@@ -3,57 +3,83 @@ using ForestEcosystemSimulation.TileContents.Food;
 
 namespace ForestEcosystemSimulation.Terrain;
 
+/// <summary>
+/// Represents a single tile in the forest ecosystem simulation.
+/// </summary>
 public class Terrain
 {
-    public readonly int Type;
-    public TileContents.TileContents? Contents;
+    /// <summary>
+    /// Type of the terrain (0: Forest, 1: River, 2: Meadow).
+    /// </summary>
+    public int Type { get; }
+    
+    /// <summary>
+    /// Contents of the tile (Tree, Berries, Fish, Grass, Burrow, or null if empty).
+    /// </summary>
+    public readonly TileContents.TileContents? Contents;
 
-    public Terrain(int type)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Terrain"/> class with the specified type.
+    /// Randomly assigns contents based on the terrain type.
+    /// </summary>
+    /// <param name="type">The type of terrain (0: Forest, 1: River, 2: Meadow).</param>
+    private Terrain(int type)
     {
         Type = type;
         double d = new Random().NextDouble();
-        if (Type == 0)
+        switch (Type)
         {
-            // Forest
-            TileContents.TileContents[] possibleContents =
-                [new Tree(), new Berries(), new Burrow()];
-            Contents = d switch
+            case 0:
             {
-                < 0.4 => null,
-                < 0.5 => possibleContents[0],
-                < 0.9 => possibleContents[1],
-                _ => possibleContents[2]
-            };
-        }
-        else if (Type == 1)
-        {
-            // River
-            TileContents.TileContents[] possibleContents =
-                [new Fish()];
-            Contents = d switch
+                // Forest
+                TileContents.TileContents[] possibleContents =
+                    [new Tree(), new Berries(), new Burrow()];
+                Contents = d switch
+                {
+                    < 0.4 => null,
+                    < 0.5 => possibleContents[0],
+                    < 0.9 => possibleContents[1],
+                    _ => possibleContents[2]
+                };
+                break;
+            }
+            case 1:
             {
-                < 0.4 => null,
-                _ => possibleContents[0]
-            };
-        }
-        else if (Type == 2)
-        {
-            // Meadow
-            TileContents.TileContents[] possibleContents =
-                [new Grass(), new Burrow()];
-            Contents = d switch
+                // River
+                TileContents.TileContents[] possibleContents =
+                    [new Fish()];
+                Contents = d switch
+                {
+                    < 0.4 => null,
+                    _ => possibleContents[0]
+                };
+                break;
+            }
+            case 2:
             {
-                < 0.3 => null,
-                < 0.8 => possibleContents[0],
-                _ => possibleContents[1]
-            };
-        }
-        else
-        {
-            Console.Error.WriteLine($"Invalid terrain type: {Type}");
+                // Meadow
+                TileContents.TileContents[] possibleContents =
+                    [new Grass(), new Burrow()];
+                Contents = d switch
+                {
+                    < 0.3 => null,
+                    < 0.8 => possibleContents[0],
+                    _ => possibleContents[1]
+                };
+                break;
+            }
+            default:
+                Console.Error.WriteLine($"Invalid terrain type: {Type}");
+                break;
         }
     }
 
+    /// <summary>
+    /// Generates a random terrain map with the specified height and width.
+    /// </summary>
+    /// <param name="height">The height of the map.</param>
+    /// <param name="width">The width of the map.</param>
+    /// <returns>A 2D array of Terrain objects representing the generated map.</returns>
     public static Terrain[][] GenerateMap(int height, int width)
     {
         Random random = new Random();
@@ -73,11 +99,13 @@ public class Terrain
         int maxWidth = Math.Min(width, height) / 5;
         maxWidth = maxWidth % 2 == 0 ? maxWidth - 1 : maxWidth;
 
+        // choosing the river's starting row and column
         int row = random.Next(0, 2) == 0 ? 0 : random.Next(0, height - 1);
         int column = row == 0 ? random.Next(0, width - 1) : 0;
 
         map[row][column] = new Terrain(1);
 
+        // from top to bottom
         if (row == 0)
         {
             for (int i = 0; i < height; i++)
@@ -99,6 +127,7 @@ public class Terrain
                 column = newColumn;
             }
         }
+        // from left to right
         else
         {
             for (int i = 0; i < width; ++i)

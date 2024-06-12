@@ -1,5 +1,8 @@
 namespace ForestEcosystemSimulation.Animals;
 
+/// <summary>
+/// Represents a hare in the forest ecosystem simulation.
+/// </summary>
 public class Hare : Herbivore
 {
     /*

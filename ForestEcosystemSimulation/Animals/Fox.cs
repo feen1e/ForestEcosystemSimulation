@@ -1,5 +1,8 @@
 namespace ForestEcosystemSimulation.Animals;
 
+/// <summary>
+/// Represents a fox in the forest ecosystem simulation.
+/// </summary>
 public class Fox : Carnivore
 {
     /*

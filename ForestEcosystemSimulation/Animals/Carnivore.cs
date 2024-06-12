@@ -2,40 +2,60 @@
 
 namespace ForestEcosystemSimulation.Animals;
 
-public class Carnivore : Animal
+/// <summary>
+/// Abstract base class representing a carnivorous animal in the forest ecosystem simulation.
+/// </summary>
+public abstract class Carnivore : Animal
 {
-    public double Strength { get; init; }
+    /// <summary>
+    /// Strength of the carnivore, influencing its hunting success.
+    /// </summary>
+    public double Strength { get; protected init; }
 
     protected Carnivore()
     {
         Diet = 2;
     }
 
-    protected void Hunt(Herbivore herbivore)
+    /// <summary>
+    /// Simulates a hunt on a herbivore animal.
+    /// </summary>
+    /// <param name="herbivore">The herbivore target.</param>
+    private void Hunt(Herbivore herbivore)
     {
+        // If the herbivore is hidden, the hunt fails
         if (herbivore.IsHidden) return;
-        Console.WriteLine($"{GetType().ToString().Split('.').Last()} is hunting a {herbivore.GetType().ToString().Split('.').Last()}.");
+        
+        Console.WriteLine($"{GetType().Name} is hunting a {herbivore.GetType().Name}.");
         bool dodged = false;
         int attack = (int)(Random.Next(1, 51) * Strength);
+        
+        // Determine if the prey dodged based on speed difference
         if (herbivore.Speed > Speed)
         {
-            dodged = Random.Next(1, 11) > (herbivore.Speed - Speed) * 10;
+            dodged = Random.Next(1, 6) > (herbivore.Speed - Speed) * 10;
         }
 
         if (dodged) return;
-        herbivore.Health -= attack;
+        herbivore.Health -= attack; 
         if (herbivore.Health <= 0)
         {
-            Console.WriteLine($"{GetType().ToString().Split('.').Last()} killed {herbivore.GetType().ToString().Split('.').Last()}.");
+            Console.WriteLine($"{GetType().Name} killed {herbivore.GetType().Name}.");
             Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (herbivore.Size + 1) * 5 + 1) / 10);
         }
     }
 
-    protected void Hunt(Omnivore omnivore)
+    /// <summary>
+    /// Simulates a hunt on an omnivore animal.
+    /// </summary>
+    /// <param name="omnivore">The omnivore target.</param>
+    private void Hunt(Omnivore omnivore)
     {
-        Console.WriteLine($"{GetType().ToString().Split('.').Last()} is hunting a {omnivore.GetType().ToString().Split('.').Last()}.");
+        Console.WriteLine($"{GetType().Name} is hunting a {omnivore.GetType().Name}.");
         bool dodged = false;
         int attack = (int)(Random.Next(1, 51) * Strength);
+        
+        // Determine if the prey dodged based on speed difference
         if (omnivore.Speed > Speed)
         {
             dodged = Random.Next(1, 11) > (omnivore.Speed - Speed) * 10;
@@ -45,15 +65,22 @@ public class Carnivore : Animal
         omnivore.Health -= attack;
         if (omnivore.Health <= 0)
         {
-            Console.WriteLine($"{GetType().ToString().Split('.').Last()} killed {omnivore.GetType().ToString().Split('.').Last()}.");
+            Console.WriteLine($"{GetType().Name} killed {omnivore.GetType().Name}.");
             Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (omnivore.Size + 1) * 5 + 1) / 10);
         }
         else
         {
-            Console.WriteLine($"{omnivore.GetType().ToString().Split('.').Last()} didn't die");
+            Console.WriteLine($"{omnivore.GetType().Name} didn't die");
         }
     }
     
+    /// <summary>
+    /// Determines the carnivore's next action based on its priorities and surrounding environment.
+    /// </summary>
+    /// <param name="priorities">List of actions sorted by priority.</param>
+    /// <param name="tileInfos">Information about surrounding tiles.</param>
+    /// <param name="map">The simulation map.</param>
+    /// <param name="animals">List of animals in the simulation.</param>
     protected override void MakeDecision(List<int> priorities, List<TileInfo> tileInfos, Terrain.Terrain[][] map,
         List<Animal> animals)
     {
@@ -115,32 +142,22 @@ public class Carnivore : Animal
                 // animal/hunt
                 if (tileInfos.Any(info => info.Content == 2))
                 {
-                    //Console.WriteLine("Hunt begins");
                     var infos = tileInfos.Select(info => info).Where(info => info.Content is 4 or 5).ToList();
-                    //Move(a.X, a.Y);
-                    
                     var possibleTargets = infos
                         .Where(info => animals.Any(animal => animal.X == info.X && animal.Y == info.Y && animal.Size <= Size))
                         .Select(info => animals.First(animal => animal.X == info.X && animal.Y == info.Y))
                         .ToList();
-                        /*.Select(info => animals[info.Y][info.X])
-                        .Where(animal => animal != null && animal.Size <= Size)
-                        .ToList();*/
 
                     if (possibleTargets.Count > 0)
                     {
-                        //Console.WriteLine("Target found");
                         Animal chosenTarget = possibleTargets[Random.Next(possibleTargets.Count)];
                         Move(chosenTarget.X, chosenTarget.Y);
-                        Console.WriteLine(chosenTarget + " " + chosenTarget.GetType());
                         if (chosenTarget.GetType() == typeof(Deer) || chosenTarget.GetType() == typeof(Hare))
                         {
                             Hunt((Herbivore)chosenTarget);
-                            //Console.WriteLine("Hunting herbivore");
                         }
                         else if (chosenTarget.GetType() == typeof(Bear) || chosenTarget.GetType() == typeof(Racoon))
                         {
-                            //Console.WriteLine("Hunting omnivore");
                             Hunt((Omnivore)chosenTarget);
                         }
                     }

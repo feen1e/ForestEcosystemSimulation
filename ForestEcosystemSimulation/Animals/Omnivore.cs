@@ -2,10 +2,24 @@
 
 namespace ForestEcosystemSimulation.Animals;
 
+/// <summary>
+/// Abstract base class representing an omnivorous animal in the forest ecosystem simulation.
+/// </summary>
 public abstract class Omnivore : Animal
 {
+    /// <summary>
+    /// Indicates whether the omnivore can climb trees.
+    /// </summary>
     protected bool CanClimb { get; init; }
+    
+    /// <summary>
+    /// Indicates whether the omnivore can hunt other animals.
+    /// </summary>
     protected bool CanHunt { get; init; }
+    
+    /// <summary>
+    /// The strength of the omnivore, influencing hunting abilities.
+    /// </summary>
     protected double Strength { get; init; }
 
     protected Omnivore()
@@ -14,6 +28,11 @@ public abstract class Omnivore : Animal
     }
 
 
+    /// <summary>
+    /// Simulates the omnivore climbing to a new position.
+    /// </summary>
+    /// <param name="height">The height of the map.</param>
+    /// <param name="width">The width of the map.</param>
     private void Climb(int height, int width)
     {
         int newX, newY;
@@ -32,6 +51,13 @@ public abstract class Omnivore : Animal
         Console.WriteLine($"{GetType().ToString().Split('.').Last()} climbed to [{X}, {Y}].");
         UsedEnergy();
     }
+    
+    /// <summary>
+    /// Overrides the base Move method to allow climbing if the omnivore has that ability.
+    /// </summary>
+    /// <param name="height">The height of the map.</param>
+    /// <param name="width">The width of the map.</param>
+    /// <param name="map">The simulation map.</param>
     protected override void Move(int height, int width, Terrain.Terrain[][] map)
     {
         if (!CanClimb)
@@ -44,6 +70,10 @@ public abstract class Omnivore : Animal
         }
     }
 
+    /// <summary>
+    /// Simulates the omnivore hunting a herbivore.
+    /// </summary>
+    /// <param name="herbivore">The herbivore target.</param>
     private void Hunt(Herbivore herbivore)
     {
         if (herbivore.IsHidden) return;
@@ -62,6 +92,10 @@ public abstract class Omnivore : Animal
         }
     }
 
+    /// <summary>
+    /// Simulates the omnivore hunting a carnivore.
+    /// </summary>
+    /// <param name="carnivore">The carnivore target.</param>
     private void Hunt(Carnivore carnivore)
     {
         Console.WriteLine($"{GetType().ToString().Split('.').Last()} is hunting a {carnivore.GetType().ToString().Split('.').Last()}.");
@@ -124,6 +158,13 @@ public abstract class Omnivore : Animal
         }
     }
 
+    /// <summary>
+    /// Determines the omnivore's next action based on its priorities and surrounding environment.
+    /// </summary>
+    /// <param name="priorities">List of actions sorted by priority.</param>
+    /// <param name="tileInfos">Information about surrounding tiles.</param>
+    /// <param name="map">The simulation map.</param>
+    /// <param name="animals">List of animals in the simulation.</param>
     protected override void MakeDecision(List<int> priorities, List<TileInfo> tileInfos, Terrain.Terrain[][] map,
         List<Animal> animals)
     {

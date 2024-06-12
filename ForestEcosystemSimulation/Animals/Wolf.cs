@@ -1,5 +1,8 @@
 namespace ForestEcosystemSimulation.Animals;
 
+/// <summary>
+/// Represents a wolf in the forest ecosystem simulation.
+/// </summary>
 public class Wolf : Carnivore
 {
     /*

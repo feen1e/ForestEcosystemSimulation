@@ -1,5 +1,8 @@
 namespace ForestEcosystemSimulation.Animals;
 
+/// <summary>
+/// Represents a racoon in the forest ecosystem simulation.
+/// </summary>
 public class Racoon : Omnivore
 {
     /*
