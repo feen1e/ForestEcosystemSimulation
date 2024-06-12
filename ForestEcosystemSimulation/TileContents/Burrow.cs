@@ -1,4 +1,4 @@
-namespace ForestEcosystemSimulation2.TileContents;
+namespace ForestEcosystemSimulation.TileContents;
 
 public class Burrow : TileContents
 {

@@ -1,4 +1,4 @@
-namespace ForestEcosystemSimulation2.Animals;
+namespace ForestEcosystemSimulation.Animals;
 
 public class Deer : Herbivore
 {

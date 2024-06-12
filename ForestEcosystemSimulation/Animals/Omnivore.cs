@@ -1,6 +1,6 @@
-﻿using ForestEcosystemSimulation2.TileContents.Food;
+﻿using ForestEcosystemSimulation.TileContents.Food;
 
-namespace ForestEcosystemSimulation2.Animals;
+namespace ForestEcosystemSimulation.Animals;
 
 public abstract class Omnivore : Animal
 {

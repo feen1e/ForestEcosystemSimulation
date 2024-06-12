@@ -1,7 +1,7 @@
-﻿using ForestEcosystemSimulation2.Animals;
-using ForestEcosystemSimulation2.TileContents.Food;
+﻿using ForestEcosystemSimulation.Animals;
+using ForestEcosystemSimulation.TileContents.Food;
 
-namespace ForestEcosystemSimulation2;
+namespace ForestEcosystemSimulation;
 
 public class ForestEcosystemSimulation
 {

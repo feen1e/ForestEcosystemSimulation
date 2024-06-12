@@ -1,4 +1,4 @@
-namespace ForestEcosystemSimulation2.TileContents.Food;
+namespace ForestEcosystemSimulation.TileContents.Food;
 
 public class Berries : Food
 {
