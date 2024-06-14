@@ -84,7 +84,6 @@ public abstract class Omnivore : Animal
                         .Where(info => animals.Any(animal => animal.X == info.X && animal.Y == info.Y && animal.Size <= Size))
                         .Select(info => animals.First(animal => animal.X == info.X && animal.Y == info.Y))
                         .ToList();
-                    Console.WriteLine(possibleTargets.Count);
 
                     if (possibleTargets.Count > 0)
                     {

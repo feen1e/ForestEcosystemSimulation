@@ -12,6 +12,8 @@ public abstract class Carnivore : Animal
     /// </summary>
     public double Strength { get; protected set; }
 
+    public int SuccessfulHunts { get; set; } = 0;
+
     protected Carnivore()
     {
         Diet = 2;
@@ -46,6 +48,7 @@ public abstract class Carnivore : Animal
         {
             Console.WriteLine($"{GetType().Name} killed {herbivore.GetType().Name}.");
             Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (herbivore.Size + 1) * 5 + 1) / 10);
+            SuccessfulHunts += 1;
         }
     }
 
@@ -71,6 +74,7 @@ public abstract class Carnivore : Animal
         {
             Console.WriteLine($"{GetType().Name} killed {omnivore.GetType().Name}.");
             Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (omnivore.Size + 1) * 5 + 1) / 10);
+            SuccessfulHunts += 1;
         }
         else
         {

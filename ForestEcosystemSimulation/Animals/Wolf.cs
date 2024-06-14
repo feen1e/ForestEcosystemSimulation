@@ -11,7 +11,7 @@ public class Wolf : Carnivore
      * size = 1
      * strength= [0-0.8]
      */
-
+    
     public Wolf()
     {
         MaxHealth = Random.Next(15, 31);

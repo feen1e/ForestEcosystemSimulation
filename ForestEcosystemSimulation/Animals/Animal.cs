@@ -122,7 +122,7 @@ public abstract class Animal
     protected void Drink()
     {
         Console.WriteLine($"{GetType().Name} at [{X}, {Y}] is drinking water.");
-        Thirst = Math.Max(0, Thirst - Random.NextDouble());
+        Thirst = Math.Max(0, Thirst - Random.NextDouble() - 0.05);
     }
 
     /// <summary>
@@ -215,9 +215,9 @@ public abstract class Animal
     /// </summary>
     protected void UsedEnergy()
     {
-        Energy = Math.Max(0, Energy - (Random.NextDouble() * 0.15 + 0.01));
-        Hunger = Math.Min(1, Hunger + (Random.NextDouble() * 0.15 + 0.01));
-        Thirst = Math.Min(1, Thirst + (Random.NextDouble() * 0.15 + 0.01));
+        Energy = Math.Max(0, Energy - (Random.NextDouble() * 0.1 + 0.01));
+        Hunger = Math.Min(1, Hunger + (Random.NextDouble() * 0.1 + 0.01));
+        Thirst = Math.Min(1, Thirst + (Random.NextDouble() * 0.1 + 0.01));
         if (Energy == 0 || Math.Abs(Hunger - 1) < 0.01 || Math.Abs(Thirst - 1) < 0.01)
         {
             Health -= 1;

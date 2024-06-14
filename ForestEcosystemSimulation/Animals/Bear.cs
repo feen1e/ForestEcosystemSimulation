@@ -14,6 +14,8 @@ public class Bear : Omnivore
      * strength = [0.5-1]
      */
 
+    public int SuccessfulHunts { get; set; } = 0;
+    
     public Bear()
     {
         MaxHealth = Random.Next(20, 31);
@@ -46,7 +48,9 @@ public class Bear : Omnivore
         herbivore.Health -= attack;
         if (herbivore.Health <= 0)
         {
+            Console.WriteLine($"{GetType().Name} killed {herbivore.GetType().Name}.");
             Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (herbivore.Size + 1) * 5 + 1) / 10);
+            SuccessfulHunts += 1;
         }
     }
 

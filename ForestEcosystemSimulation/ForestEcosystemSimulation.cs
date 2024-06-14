@@ -1,4 +1,5 @@
-﻿using ForestEcosystemSimulation.Animals;
+﻿using System.Text;
+using ForestEcosystemSimulation.Animals;
 using ForestEcosystemSimulation.TileContents.Food;
 
 namespace ForestEcosystemSimulation;
@@ -75,8 +76,7 @@ public class ForestEcosystemSimulation
         { typeof(Fox), 'F' },
         { typeof(Wolf), 'W' }
     };
-
-
+    
     /// <summary>
     /// Adds animals to the simulation based on the configured numbers for each type.
     /// </summary>
@@ -121,29 +121,45 @@ public class ForestEcosystemSimulation
     {
         ForestEcosystemSimulation simulation = new ForestEcosystemSimulation();
         simulation.Width = 40;
-        simulation.Height = 100;
-        simulation.NumHare = 2;
-        simulation.NumDeer = 2;
-        simulation.NumRacoon = 2;
-        simulation.NumBear = 2;
-        simulation.NumFox = 2;
-        simulation.NumWolf = 2;
-        simulation._iterations = 50;
+        simulation.Height = 40;
+        simulation.NumHare = 30;
+        simulation.NumDeer = 30;
+        simulation.NumRacoon = 5;
+        simulation.NumBear = 5;
+        simulation.NumFox = 5;
+        simulation.NumWolf = 5;
+        simulation._iterations = 150;
         simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
-        simulation.AddAnimals();
-        
-        /*foreach (var animal in simulation.Animals)
+        /*using (StreamWriter writer = new StreamWriter("C:\\Users\\dkacz\\RiderProjects\\ForestEcosystemSimulation2\\ForestEcosystemSimulation\\Results\\WolfToHerbivore.txt"))
         {
-            Console.WriteLine($"Animal X: {animal.X}, Y: {animal.Y}");
+            writer.WriteLine("liczba wilkow; nr symulacji; liczba zajęcy po symulacji; liczba jeleni po symulacji; liczba udanych polowań");
+            for (int wolves = 5; wolves <= 50; wolves += 5)
+            {
+                simulation.NumWolf = wolves;
+                for (int i = 1; i <= 30; i++)
+                {
+                    simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
+                    simulation.AddAnimals();
+                    List<Animal> animals = simulation.Animals.ToList();
+                    simulation.RunSimulationNoPrint(simulation._iterations);
+                    List<Carnivore> wolfList = animals.Where(w => w is Wolf).Cast<Carnivore>().ToList();
+                    var wolfCount = wolfList.Count;
+                    int successfulHunts = wolfList.Sum(w => w.SuccessfulHunts);
+                    var hareCount = simulation.Animals.Count(h => h is Hare);
+                    var deerCount = simulation.Animals.Count(d => d is Deer);
+                    writer.WriteLine($"{wolfCount}; {i}; {hareCount}; {deerCount}; {successfulHunts}");
+                    Console.WriteLine($"{wolfCount}; {i}; {hareCount}; {deerCount}; {successfulHunts}");
+                }
+            }
         }*/
-
-        simulation.PrintMap();
+        simulation.AddAnimals();
         //simulation.CheckMap();
-        PrintControls();
-
-        char input = Console.ReadKey().KeyChar;
+        simulation.PrintMap();
+        char input = ' ';
         while (input != 'e')
         {
+            PrintControls();
+            input = Console.ReadKey().KeyChar;
             switch (input)
             {
                 case 'r':
@@ -162,9 +178,6 @@ public class ForestEcosystemSimulation
                     simulation.CheckMap();
                     break;
             }
-
-            PrintControls();
-            input = Console.ReadKey().KeyChar;
         }
     }
 
@@ -173,8 +186,9 @@ public class ForestEcosystemSimulation
     /// </summary>
     private void PrintMap()
     {
-        Console.WriteLine();
+        UpdateAnimalPositions();
         int index = 0;
+        StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < Height; ++i)
         {
             for (int j = 0; j < Width; ++j)
@@ -195,21 +209,22 @@ public class ForestEcosystemSimulation
                 {
                     // forest
                     case 0:
-                        Console.Write($"\u001b[42m {s} \u001b[0m");
+                        stringBuilder.Append($"\u001b[42m {s} \u001b[0m");
                         break;
                     // river
                     case 1:
-                        Console.Write($"\u001b[44m {s} \u001b[0m");
+                        stringBuilder.Append($"\u001b[44m {s} \u001b[0m");
                         break;
                     // meadow
                     case 2:
-                        Console.Write($"\u001b[102m {s} \u001b[0m");
+                        stringBuilder.Append($"\u001b[102m {s} \u001b[0m");
                         break;
                 }
             }
 
-            Console.WriteLine();
+            stringBuilder.Append("\n");
         }
+        Console.WriteLine(stringBuilder);
     }
     
     /// <summary>
@@ -226,6 +241,8 @@ public class ForestEcosystemSimulation
 
         for (int i = 0; i < iterations; i++)
         {
+            Console.WriteLine($"\nIteration {i + 1}");
+
             if (Animals.Count <= 0)
             {
                 Console.WriteLine("All animals died. Simulation ended.");
@@ -236,18 +253,52 @@ public class ForestEcosystemSimulation
             {
                 animal.Scout(Height, Width, Tiles, Animals);
             }
+            
+            IncreaseTimeSinceRegen();
+            UpdateAnimalPositions();
+            Console.WriteLine();
+            PrintMap();
+            Thread.Sleep(500);
+        }
+    }
+    
+    private void RunSimulationNoPrint(int iterations)
+    {
+        if (Animals.Count == 0)
+        {
+            return;
+        }
 
-            IncreaseTimeSinceRegen(); // increases TimeSinceRegen of Food objects
-            UpdateAnimalPositions(); // updates the positions of animals
-            PrintMap(); // prints the map
+        for (int i = 0; i < iterations; i++)
+        {
+            if (Animals.Count <= 0)
+            { 
+                return;
+            }
+
+            foreach (var animal in Animals)
+            {
+                animal.Scout(Height, Width, Tiles, Animals);
+            }
+            IncreaseTimeSinceRegen();
+            UpdateAnimalPositions();
         }
     }
 
     /// <summary>
-    /// Prints information about each tile in the map, including terrain type and contents.
+    /// Prints information about animals and each tile in the map, including terrain type and contents.
     /// </summary>
     private void CheckMap()
     {
+        if (Animals.Count > 0)
+        {
+            Console.WriteLine("Animals: ");
+            foreach (var animal in Animals)
+            {
+                Console.WriteLine($"{animal.GetType().Name} X: {animal.X}, Y: {animal.Y}");
+            }
+            Console.WriteLine("Map: ");
+        }
         for (int i = 0; i < Height; ++i)
         {
             for (int j = 0; j < Width; ++j)
@@ -297,14 +348,16 @@ public class ForestEcosystemSimulation
         }
     }
 
+    // TODO allow changing parameters
+    
     private static void PrintControls()
     {
         Console.WriteLine("""
-
+                          p - change parameters
                           r - regenerate map and animals
                           a - regenerate animals
                           c - check contents of the map
-                          s - start simulation (wip)
+                          s - start simulation
                           e - end
 
                           """);

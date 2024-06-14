@@ -8,27 +8,27 @@ public abstract class Food : TileContents
     /// <summary>
     /// Indicates whether the food is a plant or not.
     /// </summary>
-    public bool IsPlant;
+    public bool IsPlant { get; protected init; }
 
     /// <summary>
     /// The maximum amount of food available at this source.
     /// </summary>
-    protected int MaxCount;
+    protected int MaxCount { get; set; }
 
     /// <summary>
     /// The current amount of food available at this source.
     /// </summary>
-    public int Count;
+    public int Count { get; set; }
 
     /// <summary>
     /// The time it takes for the food source to regenerate after being depleted.
     /// </summary>
-    protected int TimeToRegen;
+    protected int TimeToRegen { get; set; }
 
     /// <summary>
     /// The time that has passed since the food source was last regenerated.
     /// </summary>
-    protected int TimeSinceRegen;
+    protected int TimeSinceRegen { get; set; }
 
     protected Food()
     {
@@ -58,7 +58,7 @@ public abstract class Food : TileContents
     /// <summary>
     /// Increments the time since the food was last regenerated, and triggers <see cref="Regenerate"/> if necessary.
     /// </summary>
-    public void AddTime()
+    public virtual void AddTime()
     {
         TimeSinceRegen += 1;
         if (TimeSinceRegen >= TimeToRegen)
