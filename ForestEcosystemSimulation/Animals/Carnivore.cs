@@ -10,7 +10,7 @@ public abstract class Carnivore : Animal
     /// <summary>
     /// Strength of the carnivore, influencing its hunting success.
     /// </summary>
-    public double Strength { get; protected init; }
+    public double Strength { get; protected set; }
 
     protected Carnivore()
     {
@@ -21,10 +21,14 @@ public abstract class Carnivore : Animal
     /// Simulates a hunt on a herbivore animal.
     /// </summary>
     /// <param name="herbivore">The herbivore target.</param>
-    private void Hunt(Herbivore herbivore)
+    protected virtual void Hunt(Herbivore herbivore)
     {
-        // If the herbivore is hidden, the hunt fails
-        if (herbivore.IsHidden) return;
+        // If the herbivore is a hare and is hidden, the hunt fails
+        if (herbivore.GetType() == typeof(Hare))
+        {
+            var hare = herbivore as Hare;
+            if (hare.IsHidden) return;
+        }
         
         Console.WriteLine($"{GetType().Name} is hunting a {herbivore.GetType().Name}.");
         bool dodged = false;
@@ -86,7 +90,7 @@ public abstract class Carnivore : Animal
     {
         base.MakeDecision(priorities, tileInfos, map, animals);
         /*
-         * Hunt - 3
+         * 3 - hunt
          */
         if (tileInfos.Any(info => info.Content is 4 or 5))
         {

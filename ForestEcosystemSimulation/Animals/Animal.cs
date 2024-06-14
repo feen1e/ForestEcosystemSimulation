@@ -88,7 +88,7 @@ public abstract class Animal
 
         X = newX;
         Y = newY;
-        Console.WriteLine($"{GetType().ToString().Split('.').Last()} moved to [{X}, {Y}].");
+        Console.WriteLine($"{GetType().Name} moved to [{X}, {Y}].");
     }
 
     /// <summary>
@@ -98,7 +98,7 @@ public abstract class Animal
     /// <param name="y">The new Y coordinate.</param>
     protected void Move(int x, int y)
     {
-        Console.WriteLine($"{GetType().ToString().Split('.').Last()} moved to [{x}, {y}].");
+        Console.WriteLine($"{GetType().Name} moved to [{x}, {y}].");
         X = x;
         Y = y;
     }
@@ -110,7 +110,7 @@ public abstract class Animal
     protected void Eat(Food food)
     {
         Console.WriteLine(
-            $"{GetType().ToString().Split('.').Last()} at [{X}, {Y}] is eating {food.GetType().ToString().Split('.').Last()}.");
+            $"{GetType().Name} at [{X}, {Y}] is eating {food.GetType().Name}.");
         int amount = Random.Next(0, food.Count + 1);
         Hunger = Math.Max(0, Hunger - (double)amount / 10);
         food.Eaten(amount);
@@ -121,7 +121,7 @@ public abstract class Animal
     /// </summary>
     protected void Drink()
     {
-        Console.WriteLine($"{GetType().ToString().Split('.').Last()} at [{X}, {Y}] is drinking water.");
+        Console.WriteLine($"{GetType().Name} at [{X}, {Y}] is drinking water.");
         Thirst = Math.Max(0, Thirst - Random.NextDouble());
     }
 
@@ -130,7 +130,7 @@ public abstract class Animal
     /// </summary>
     protected void Rest()
     {
-        Console.WriteLine($"{GetType().ToString().Split('.').Last()} at [{X}, {Y}] is resting.");
+        Console.WriteLine($"{GetType().Name} at [{X}, {Y}] is resting.");
         Energy = Math.Min(Random.NextDouble() + Energy, 1);
     }
 
@@ -229,7 +229,7 @@ public abstract class Animal
 
         if (Health <= 0)
         {
-            Console.WriteLine($"{GetType().ToString().Split('.').Last()} died.");
+            Console.WriteLine($"{GetType().Name} died.");
         }
     }
     

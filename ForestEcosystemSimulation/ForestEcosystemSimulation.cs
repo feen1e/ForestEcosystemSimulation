@@ -120,7 +120,7 @@ public class ForestEcosystemSimulation
     public static void Main()
     {
         ForestEcosystemSimulation simulation = new ForestEcosystemSimulation();
-        simulation.Width = 50;
+        simulation.Width = 40;
         simulation.Height = 100;
         simulation.NumHare = 2;
         simulation.NumDeer = 2;

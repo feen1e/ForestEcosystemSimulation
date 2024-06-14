@@ -20,9 +20,99 @@ public class Bear : Omnivore
         Health = MaxHealth;
         Speed = Random.NextDouble() * 0.5;
         Size = 1;
-        CanClimb = false;
-        CanHunt = true;
         Strength = Random.NextDouble() * (1 - 0.5) + 0.5;
     }
 
+        /// <summary>
+    /// Simulates the omnivore hunting a herbivore.
+    /// </summary>
+    /// <param name="herbivore">The herbivore target.</param>
+    public void Hunt(Herbivore herbivore)
+    {
+        // If the herbivore is a hare and is hidden, the hunt fails
+        if (herbivore.GetType() == typeof(Hare))
+        {
+            var hare = herbivore as Hare;
+            if (hare.IsHidden) return;
+        }
+        bool dodged = false;
+        int attack = (int)(Random.Next(1, 51) * Strength);
+        if (herbivore.Speed > Speed)
+        {
+            dodged = Random.Next(1, 11) > (herbivore.Speed - Speed) * 10;
+        }
+
+        if (dodged) return;
+        herbivore.Health -= attack;
+        if (herbivore.Health <= 0)
+        {
+            Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (herbivore.Size + 1) * 5 + 1) / 10);
+        }
+    }
+
+    /// <summary>
+    /// Simulates the omnivore hunting a carnivore.
+    /// </summary>
+    /// <param name="carnivore">The carnivore target.</param>
+    public void Hunt(Carnivore carnivore)
+    {
+        Console.WriteLine($"{GetType().Name} is hunting a {carnivore.GetType().Name}.");
+        bool dodged = false;
+        bool countered = false;
+        int attack = (int)(Random.Next(1, 51) * Strength);
+        if (carnivore.Speed > Speed)
+        {
+            dodged = Random.Next(1, 11) > (carnivore.Speed - Speed) * 10;
+        }
+        if (dodged) return;
+        if (carnivore.Strength > Strength)
+        {
+            countered = Random.Next(1, 11) > (carnivore.Strength - Strength) * 10;
+        }
+
+        if (!countered)
+        {
+            carnivore.Health -= attack;
+            if (carnivore.Health <= 0)
+            {
+                Console.WriteLine($"{GetType().Name} killed {carnivore.GetType().Name}.");
+                Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (carnivore.Size + 1) * 5 + 1) / 10);
+            }
+        }
+        else
+        {
+            int counter = (int)(Random.Next(1, 21) * carnivore.Strength);
+            if (carnivore.Speed > Speed)
+            {
+                Health -= counter;
+                if (Health <= 0)
+                {
+                    Console.WriteLine($"{carnivore.GetType().Name} killed {GetType().Name}.");
+                    return;
+                }
+                carnivore.Health -= attack;
+                if (carnivore.Health <= 0)
+                {
+                    Console.WriteLine($"{GetType().Name} killed {carnivore.GetType().Name}.");
+                    Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (carnivore.Size + 1) * 5 + 1) / 10);
+                }
+            }
+            else
+            {
+                carnivore.Health -= attack;
+                if (carnivore.Health <= 0)
+                {
+                    Console.WriteLine($"{GetType().Name} killed {carnivore.GetType().Name}.");
+                    Hunger = Math.Max(0, Hunger - (double)Random.Next(2, (carnivore.Size + 1) * 5 + 1) / 10);
+                    return;
+                }
+                Health -= counter;
+                if (Health <= 0)
+                {
+                    Console.WriteLine($"{carnivore.GetType().Name} killed {GetType().Name}.");
+                    return;
+                }
+            }
+        }
+    }
 }
