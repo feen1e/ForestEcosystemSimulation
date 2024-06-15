@@ -68,6 +68,11 @@ public abstract class Animal
     private List<int> Priority { get; } = new();
 
     /// <summary>
+    /// Lifespan of the animal in simulation iterations.
+    /// </summary>
+    public int LifeLength { get; private set; } = 0;
+
+    /// <summary>
     /// Moves the animal randomly to a valid location on the map, avoiding river tiles (Type 1).
     /// </summary>
     /// <param name="height">The height of the map.</param>
@@ -143,6 +148,7 @@ public abstract class Animal
     /// <param name="animals">The list of all animals in the simulation.</param>
     public void Scout(int height, int width, Terrain.Terrain[][] map, List<Animal> animals)
     {
+        LifeLength += 1;
         List<TileInfo> tileInfos = new List<TileInfo>();
         int radius = 2;
         for (int x = -radius; x <= radius; x++)

@@ -20,14 +20,14 @@ public class Racoon : Omnivore
         Health = MaxHealth;
         Speed = Random.NextDouble() * (0.6 - 0.2) + 0.2;
         Size = 0;
-        Strength = 0;
     }
-    
+
     /// <summary>
     /// Simulates the omnivore climbing to a new position.
     /// </summary>
     /// <param name="height">The height of the map.</param>
     /// <param name="width">The width of the map.</param>
+    /// <param name="map">The simulation map.</param>
     private void Climb(int height, int width, Terrain.Terrain[][] map)
     {
         int newX, newY;

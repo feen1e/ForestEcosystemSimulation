@@ -15,7 +15,7 @@ public class Grass : Food
     }
 
     /// <summary>
-    /// Increments the time since the food was last regenerated with a chance to decrease <see cref="Food.TimeToRegen"/>, and triggers <see cref="Regenerate"/> if necessary.
+    /// Increments the time since the food was last regenerated with a chance to decrease <see cref="Food.TimeToRegen"/>, and triggers <see cref="Food.Regenerate"/> if necessary.
     /// </summary>
     public override void AddTime()
     {

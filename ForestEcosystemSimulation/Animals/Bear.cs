@@ -14,7 +14,15 @@ public class Bear : Omnivore
      * strength = [0.5-1]
      */
 
+    /// <summary>
+    /// Number of successful hunts the bear performed
+    /// </summary>
     public int SuccessfulHunts { get; set; } = 0;
+    
+    /// <summary>
+    /// The strength of the bear, influencing hunting abilities.
+    /// </summary>
+    private double Strength { get; init; }
     
     public Bear()
     {
@@ -114,7 +122,6 @@ public class Bear : Omnivore
                 if (Health <= 0)
                 {
                     Console.WriteLine($"{carnivore.GetType().Name} killed {GetType().Name}.");
-                    return;
                 }
             }
         }

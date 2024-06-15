@@ -38,13 +38,13 @@ public class Wolf : Carnivore
     }
 
     /// <summary>
-    /// Simulates a hunt on a herbivore animal. If the animal is a <see cref="Hare"/> additional strength is added.
+    /// Simulates a hunt on a herbivore animal. If the animal is an <see cref="Hare"/> additional strength is added.
     /// </summary>
     /// <param name="herbivore">The herbivore target.</param>
     protected override void Hunt(Herbivore herbivore)
     {
         var str = Strength;
-        if (herbivore.GetType() == typeof(Hare)) // hunting hares is easier for wolves so they get extra strength
+        if (herbivore.GetType() == typeof(Hare)) // hunting hares is easier for wolves, so they get extra strength
         {
             Strength += 0.2;
         }

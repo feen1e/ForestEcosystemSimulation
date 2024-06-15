@@ -7,11 +7,6 @@ namespace ForestEcosystemSimulation.Animals;
 /// </summary>
 public abstract class Omnivore : Animal
 {
-    /// <summary>
-    /// The strength of the omnivore, influencing hunting abilities.
-    /// </summary>
-    protected double Strength { get; init; }
-
     protected Omnivore()
     {
         Diet = 1;
@@ -55,7 +50,7 @@ public abstract class Omnivore : Animal
                         var info = tileInfos.Select(info => info).First(i => i.Content == 0);
                         var food = map[info.Y][info.X].Contents as Food;
                         Move(info.X, info.Y);
-                        Eat(map[info.Y][info.X].Contents as Food);
+                        Eat(food);
                         acted = true;
                         break;
                     }
@@ -73,7 +68,7 @@ public abstract class Omnivore : Animal
                     }
                 }
             }
-            else if (priority == 3 && GetType() == typeof(Bear))
+            else if (priority == 3 && this is Bear)
             {
                 var bear = this as Bear;
                 // animal/hunt

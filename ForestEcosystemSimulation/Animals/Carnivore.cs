@@ -11,8 +11,11 @@ public abstract class Carnivore : Animal
     /// Strength of the carnivore, influencing its hunting success.
     /// </summary>
     public double Strength { get; protected set; }
-
-    public int SuccessfulHunts { get; set; } = 0;
+    
+    /// <summary>
+    /// Number of successful hunts the carnivore performed
+    /// </summary>
+    public int SuccessfulHunts { get; private set; } = 0;
 
     protected Carnivore()
     {
@@ -118,7 +121,7 @@ public abstract class Carnivore : Animal
                     {
                         // food/eat
                         var meat = tileInfos
-                            .Where(info => info.Content == 0 && map[info.Y][info.X].Contents is Food food && !food.IsPlant)
+                            .Where(info => info.Content == 0 && map[info.Y][info.X].Contents is Food { IsPlant: false })
                             .OrderBy(info => Math.Abs(info.X - X) + Math.Abs(info.Y - Y))
                             .ToList();
                         if (meat.Count > 0)

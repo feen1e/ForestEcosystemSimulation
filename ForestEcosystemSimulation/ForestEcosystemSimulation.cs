@@ -12,18 +12,18 @@ public class ForestEcosystemSimulation
     /// <summary>
     /// Width of the simulation map.
     /// </summary>
-    private int Width { get; set; }
-    
+    private int Width { get; set; } = 40;
+
     /// <summary>
     /// Height of the simulation map.
     /// </summary>
-    private int Height { get; set; }
-    
+    private int Height { get; set; } = 40;
+
     /// <summary>
     /// 2D array representing the terrain of the simulation map.
     /// </summary>
-    private Terrain.Terrain[][] Tiles { get; set; }
-    
+    private Terrain.Terrain[][] Tiles { get; set; } = [];
+
     /// <summary>
     /// List of animals currently in the simulation.
     /// </summary>
@@ -37,32 +37,32 @@ public class ForestEcosystemSimulation
     /// <summary>
     /// Number of hares to be added to the simulation.
     /// </summary>
-    private int NumHare { get; set; }
-    
+    private int NumHare { get; set; } = 5;
+
     /// <summary>
     /// Number of deer to be added to the simulation.
     /// </summary>
-    private int NumDeer { get; set; }
-    
+    private int NumDeer { get; set; } = 5;
+
     /// <summary>
     /// Number of racoons to be added to the simulation.
     /// </summary>
-    private int NumRacoon { get; set; }
-    
+    private int NumRacoon { get; set; } = 5;
+
     /// <summary>
     /// Number of Bears to be added to the simulation.
     /// </summary>
-    private int NumBear { get; set; }
-    
+    private int NumBear { get; set; } = 5;
+
     /// <summary>
     /// Number of foxes to be added to the simulation.
     /// </summary>
-    private int NumFox { get; set; }
-    
+    private int NumFox { get; set; } = 5;
+
     /// <summary>
-    /// Number of wolfs to be added to the simulation.
+    /// Number of wolves to be added to the simulation.
     /// </summary>
-    private int NumWolf { get; set; }
+    private int NumWolf { get; set; } = 5;
 
     /// <summary>
     /// Dictionary mapping animal types to their display symbols.
@@ -76,7 +76,7 @@ public class ForestEcosystemSimulation
         { typeof(Fox), 'F' },
         { typeof(Wolf), 'W' }
     };
-    
+
     /// <summary>
     /// Adds animals to the simulation based on the configured numbers for each type.
     /// </summary>
@@ -120,38 +120,10 @@ public class ForestEcosystemSimulation
     public static void Main()
     {
         ForestEcosystemSimulation simulation = new ForestEcosystemSimulation();
-        simulation.Width = 40;
-        simulation.Height = 40;
-        simulation.NumHare = 30;
-        simulation.NumDeer = 30;
-        simulation.NumRacoon = 5;
-        simulation.NumBear = 5;
-        simulation.NumFox = 5;
-        simulation.NumWolf = 5;
-        simulation._iterations = 150;
+        
+        //WriteResults(simulation);        
+        
         simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
-        /*using (StreamWriter writer = new StreamWriter("C:\\Users\\dkacz\\RiderProjects\\ForestEcosystemSimulation2\\ForestEcosystemSimulation\\Results\\WolfToHerbivore.txt"))
-        {
-            writer.WriteLine("liczba wilkow; nr symulacji; liczba zajęcy po symulacji; liczba jeleni po symulacji; liczba udanych polowań");
-            for (int wolves = 5; wolves <= 50; wolves += 5)
-            {
-                simulation.NumWolf = wolves;
-                for (int i = 1; i <= 30; i++)
-                {
-                    simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
-                    simulation.AddAnimals();
-                    List<Animal> animals = simulation.Animals.ToList();
-                    simulation.RunSimulationNoPrint(simulation._iterations);
-                    List<Carnivore> wolfList = animals.Where(w => w is Wolf).Cast<Carnivore>().ToList();
-                    var wolfCount = wolfList.Count;
-                    int successfulHunts = wolfList.Sum(w => w.SuccessfulHunts);
-                    var hareCount = simulation.Animals.Count(h => h is Hare);
-                    var deerCount = simulation.Animals.Count(d => d is Deer);
-                    writer.WriteLine($"{wolfCount}; {i}; {hareCount}; {deerCount}; {successfulHunts}");
-                    Console.WriteLine($"{wolfCount}; {i}; {hareCount}; {deerCount}; {successfulHunts}");
-                }
-            }
-        }*/
         simulation.AddAnimals();
         //simulation.CheckMap();
         simulation.PrintMap();
@@ -160,8 +132,12 @@ public class ForestEcosystemSimulation
         {
             PrintControls();
             input = Console.ReadKey().KeyChar;
+            Console.WriteLine();
             switch (input)
             {
+                case 'p':
+                    simulation.ChangeParameters();
+                    goto case 'r';
                 case 'r':
                     simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
                     simulation.AddAnimals();
@@ -224,9 +200,10 @@ public class ForestEcosystemSimulation
 
             stringBuilder.Append("\n");
         }
+
         Console.WriteLine(stringBuilder);
     }
-    
+
     /// <summary>
     /// Runs the forest ecosystem simulation for the specified number of iterations.
     /// </summary>
@@ -253,35 +230,12 @@ public class ForestEcosystemSimulation
             {
                 animal.Scout(Height, Width, Tiles, Animals);
             }
-            
+
             IncreaseTimeSinceRegen();
             UpdateAnimalPositions();
             Console.WriteLine();
             PrintMap();
             Thread.Sleep(500);
-        }
-    }
-    
-    private void RunSimulationNoPrint(int iterations)
-    {
-        if (Animals.Count == 0)
-        {
-            return;
-        }
-
-        for (int i = 0; i < iterations; i++)
-        {
-            if (Animals.Count <= 0)
-            { 
-                return;
-            }
-
-            foreach (var animal in Animals)
-            {
-                animal.Scout(Height, Width, Tiles, Animals);
-            }
-            IncreaseTimeSinceRegen();
-            UpdateAnimalPositions();
         }
     }
 
@@ -297,8 +251,10 @@ public class ForestEcosystemSimulation
             {
                 Console.WriteLine($"{animal.GetType().Name} X: {animal.X}, Y: {animal.Y}");
             }
+
             Console.WriteLine("Map: ");
         }
+
         for (int i = 0; i < Height; ++i)
         {
             for (int j = 0; j < Width; ++j)
@@ -317,7 +273,7 @@ public class ForestEcosystemSimulation
     {
         if (Animals.Count == 0) return;
         // sorts the list of animals by Y and X in ascending order
-        List<Animal> sortedList = Animals 
+        List<Animal> sortedList = Animals
             .OrderBy(animal => animal.Y)
             .ThenBy(animal => animal.X)
             .ToList();
@@ -348,8 +304,55 @@ public class ForestEcosystemSimulation
         }
     }
 
-    // TODO allow changing parameters
+    private void ChangeParameters()
+    {
+        PrintParameters("Current");
+        
+        Console.WriteLine("Input a number to change the parameter or leave blank to retain its value.");
+        NumHare = GetNewValue("New number of hares: ", NumHare);
+        NumDeer = GetNewValue("New number of deer: ", NumDeer);
+        NumRacoon = GetNewValue("New number of raccoons: ", NumRacoon);
+        NumBear = GetNewValue("New number of bears: ", NumBear);
+        NumFox = GetNewValue("New number of foxes: ", NumFox);
+        NumWolf = GetNewValue("New number of wolves: ", NumWolf);
+        _iterations = GetNewValue("New number of iterations: ", _iterations);
+        Height = Math.Max(1, GetNewValue("New map height: ", Height));
+        Width = Math.Max(1, GetNewValue("New map width: ", Width));
+        
+        PrintParameters("New");
+        
+        return;
+
+        void PrintParameters(string s)
+        {
+            Console.WriteLine($"""
+                               
+                               {s} parameters:
+                               Number of hares: {NumHare}
+                               Number of deer: {NumDeer}
+                               Number of racoons: {NumRacoon}
+                               Number of bears: {NumBear}
+                               Number of foxes: {NumFox}
+                               Number of wolves: {NumWolf}
+                               Number of iterations: {_iterations}
+                               Map height: {Height}
+                               Map width: {Width}
+
+                               """);
+        }
+
+        int GetNewValue(string prompt, int oldValue)
+        {
+            Console.Write(prompt);
+            if (int.TryParse(Console.ReadLine(), out int newValue) && newValue >= 0)
+            {
+                return newValue;
+            }
+            return oldValue;
+        }
+    }
     
+
     private static void PrintControls()
     {
         Console.WriteLine("""
@@ -361,5 +364,85 @@ public class ForestEcosystemSimulation
                           e - end
 
                           """);
+    }
+
+    private static void WriteResults(ForestEcosystemSimulation simulation)
+    {
+        using (StreamWriter writer = new StreamWriter("C:\\Users\\dkacz\\RiderProjects\\ForestEcosystemSimulation2\\ForestEcosystemSimulation\\Results\\WolfToHerbivore.txt"))
+        {
+            writer.WriteLine("liczba wilkow; nr symulacji; liczba zajęcy po symulacji; liczba jeleni po symulacji; liczba udanych polowań");
+            for (int wolves = 5; wolves <= 50; wolves += 5)
+            {
+                simulation.NumWolf = wolves;
+                for (int i = 1; i <= 30; i++)
+                {
+                    simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
+                    simulation.AddAnimals();
+                    List<Animal> animals = simulation.Animals.ToList();
+                    simulation.RunSimulationNoPrint(simulation._iterations);
+                    List<Carnivore> wolfList = animals.Where(w => w is Wolf).Cast<Carnivore>().ToList();
+                    var wolfCount = wolfList.Count;
+                    int successfulHunts = wolfList.Sum(w => w.SuccessfulHunts);
+                    var hareCount = simulation.Animals.Count(h => h is Hare);
+                    var deerCount = simulation.Animals.Count(d => d is Deer);
+                    writer.WriteLine($"{wolfCount}; {i}; {hareCount}; {deerCount}; {successfulHunts}");
+                    Console.WriteLine($"{wolfCount}; {i}; {hareCount}; {deerCount}; {successfulHunts}");
+                }
+            }
+        }
+        using (StreamWriter writer =
+               new StreamWriter(
+                   "C:\\Users\\dkacz\\RiderProjects\\ForestEcosystemSimulation2\\ForestEcosystemSimulation\\Results\\NumToLifeLength.txt"))
+        {
+            writer.WriteLine(
+                "liczba zwierząt każdego gatunku; nr symulacji; długość życia zajęcy; dł. ż. jeleni; dł. ż. szopów; dł. ż niedźwiedzi; dł. ż. lisów; dł. ż. wilków");
+            for (int a = 5; a <= 50; a += 5)
+            {
+                simulation.NumHare = a;
+                simulation.NumDeer = a;
+                simulation.NumRacoon = a;
+                simulation.NumBear = a;
+                simulation.NumFox = a;
+                simulation.NumWolf = a;
+                for (int i = 1; i <= 30; i++)
+                {
+                    simulation.Tiles = Terrain.Terrain.GenerateMap(simulation.Height, simulation.Width);
+                    simulation.AddAnimals();
+                    List<Animal> animals = simulation.Animals.ToList();
+                    simulation.RunSimulationNoPrint(500);
+                    writer.WriteLine(
+                        $"{a}; {i}; {animals.Where(h => h is Hare).Sum(h => h.LifeLength) / a}; {animals.Where(d => d is Deer).Sum(d => d.LifeLength) / a}; {animals.Where(r => r is Racoon).Sum(r => r.LifeLength) / a}; {animals.Where(b => b is Bear).Sum(b => b.LifeLength) / a}; {animals.Where(f => f is Fox).Sum(f => f.LifeLength) / a}; {animals.Where(w => w is Wolf).Sum(w => w.LifeLength) / a}");
+                    Console.WriteLine($"{a}; {i}; {animals.Where(h => h is Hare).Sum(h => h.LifeLength) / a}; {animals.Where(d => d is Deer).Sum(d => d.LifeLength) / a}; {animals.Where(r => r is Racoon).Sum(r => r.LifeLength) / a}; {animals.Where(b => b is Bear).Sum(b => b.LifeLength) / a}; {animals.Where(f => f is Fox).Sum(f => f.LifeLength) / a}; {animals.Where(w => w is Wolf).Sum(w => w.LifeLength) / a}");
+                    foreach (var animal in animals)
+                    {
+                        Console.WriteLine($"{animal.GetType().Name} : {animal.LifeLength}");
+                    }
+                }
+            }
+        }
+    }
+    
+    private void RunSimulationNoPrint(int iterations)
+    {
+        if (Animals.Count == 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < iterations; i++)
+        {
+            if (Animals.Count <= 0)
+            {
+                return;
+            }
+
+            foreach (var animal in Animals)
+            {
+                animal.Scout(Height, Width, Tiles, Animals);
+            }
+
+            IncreaseTimeSinceRegen();
+            UpdateAnimalPositions();
+        }
     }
 }

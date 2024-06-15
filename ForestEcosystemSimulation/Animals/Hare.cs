@@ -18,7 +18,7 @@ public class Hare : Herbivore
     /// <summary>
     /// Indicates whether this herbivore is currently hidden in a burrow.
     /// </summary>
-    public bool IsHidden { get; set; } = false;
+    public bool IsHidden { get; private set; } = false;
 
     public Hare()
     {
